@@ -5,8 +5,29 @@ import { bindCellInput, refocusCell } from "../../shared/cellInput";
 import { load, save as persist } from "../../shared/storage";
 import { PUZZLES, type ClueKind, type Flower, type RacinesPuzzle } from "./puzzles";
 
-/* Marques du joueur : "s0".."s2" graine, "m0".."m2" possible, "x" croix */
-type Marks = Record<string, string>;
+/* Marques du joueur sur une case : une graine, une croix, et des « possible » cumulables (une par fleur). */
+interface CellMarks {
+  seed?: Flower;
+  cross?: boolean;
+  maybe?: Flower[];
+}
+type Marks = Record<string, CellMarks>;
+
+/** Convertit l'ancien format de sauvegarde ("s0", "m1", "x") vers le nouveau. */
+function normalize(raw: Record<string, unknown>): Marks {
+  const out: Marks = {};
+  for (const [k, v] of Object.entries(raw ?? {})) {
+    if (typeof v === "string") {
+      const f = Number(v[1]) as Flower;
+      if (v[0] === "s") out[k] = { seed: f };
+      else if (v[0] === "m") out[k] = { maybe: [f] };
+      else if (v === "x") out[k] = { cross: true };
+    } else if (v && typeof v === "object") {
+      out[k] = v as CellMarks;
+    }
+  }
+  return out;
+}
 
 const STORAGE_KEY = "racines-v1";
 const FLOWERS: Flower[] = [0, 1, 2];
@@ -29,11 +50,15 @@ let marks: Marks[] = PUZZLES.map(() => ({}));
 let solved: boolean[] = PUZZLES.map(() => false);
 let showDays = false; // affiche le jour d'arrivée sur chaque case fleurie
 
-const saved = load<{ marks: Marks[]; solved: boolean[]; current: number; selected: Flower; showDays?: boolean }>(
-  STORAGE_KEY,
-);
+const saved = load<{
+  marks: Record<string, unknown>[];
+  solved: boolean[];
+  current: number;
+  selected: Flower;
+  showDays?: boolean;
+}>(STORAGE_KEY);
 if (saved && Array.isArray(saved.marks) && saved.marks.length === PUZZLES.length) {
-  marks = saved.marks;
+  marks = saved.marks.map(normalize);
   solved = saved.solved ?? solved;
   current = saved.current ?? 0;
   selected = saved.selected ?? 0;
@@ -95,7 +120,7 @@ function grow(p: RacinesPuzzle, seeds: string[]) {
 
 function placedSeeds(): (string | null)[] {
   const st = marks[current];
-  return FLOWERS.map((f) => Object.keys(st).find((k) => st[k] === `s${f}`) ?? null);
+  return FLOWERS.map((f) => Object.keys(st).find((k) => st[k].seed === f) ?? null);
 }
 
 function clueMatches(k: string, kind: ClueKind, day: number | null): boolean {
@@ -111,12 +136,15 @@ function stopBloom() {
   view = "plant";
 }
 
-function setMark(k: string, mark: string | null) {
+/** Modifie les marques d'une case, puis nettoie, redessine et sauvegarde. */
+function updateCell(k: string, change: (cell: CellMarks) => void) {
   const st = marks[current];
-  if (mark?.startsWith("s")) {
-    for (const other of Object.keys(st)) if (st[other] === mark) delete st[other]; // une seule graine par fleur
-  }
-  if (mark) st[k] = mark; else delete st[k];
+  const cell = st[k] ?? {};
+  change(cell);
+  if (cell.maybe && !cell.maybe.length) delete cell.maybe;
+  if (!cell.cross) delete cell.cross;
+  if (cell.seed === undefined && !cell.cross && !cell.maybe) delete st[k];
+  else st[k] = cell;
   stopBloom();
   setStatus("");
   render();
@@ -124,14 +152,51 @@ function setMark(k: string, mark: string | null) {
   refocusCell(boardEl, k);
 }
 
+const withoutMaybe = (cell: CellMarks, f: Flower) => {
+  cell.maybe = (cell.maybe ?? []).filter((m) => m !== f);
+};
+
+function plantSeed(cell: CellMarks, f: Flower) {
+  // une seule graine par fleur : on la retire de son ancienne case (et on oublie la case si elle est vide)
+  const st = marks[current];
+  for (const [k, other] of Object.entries(st)) {
+    if (other === cell || other.seed !== f) continue;
+    delete other.seed;
+    if (!other.cross && !other.maybe?.length) delete st[k];
+  }
+  cell.seed = f;
+  cell.cross = false;
+  withoutMaybe(cell, f);
+}
+
 function cycle(k: string) {
-  // graine de la couleur choisie → possible → vide
-  const v = marks[current][k];
-  setMark(k, v === `s${selected}` ? `m${selected}` : v === `m${selected}` ? null : `s${selected}`);
+  // pour la fleur choisie : rien → graine → possible → rien ; les autres fleurs ne sont pas touchées
+  const f = selected;
+  updateCell(k, (cell) => {
+    if (cell.seed === f) {
+      delete cell.seed;
+      cell.maybe = [...(cell.maybe ?? []), f];
+    } else if (cell.maybe?.includes(f)) {
+      withoutMaybe(cell, f);
+    } else {
+      plantSeed(cell, f);
+    }
+  });
+}
+
+function toggleMaybe(k: string) {
+  const f = selected;
+  updateCell(k, (cell) => {
+    if (cell.maybe?.includes(f)) withoutMaybe(cell, f);
+    else cell.maybe = [...(cell.maybe ?? []), f];
+  });
 }
 
 function toggleCross(k: string) {
-  setMark(k, marks[current][k] === "x" ? null : "x");
+  updateCell(k, (cell) => {
+    cell.cross = !cell.cross;
+    if (cell.cross) delete cell.seed; // une croix veut dire « pas de graine ici »
+  });
 }
 
 /** Quitte la floraison et retrouve les graines telles qu'elles étaient plantées. */
@@ -149,7 +214,7 @@ function bindCell(b: HTMLButtonElement, k: string) {
   bindCellInput(b, {
     primary: unlessBlooming(() => cycle(k)),
     cross: unlessBlooming(() => toggleCross(k)),
-    maybe: unlessBlooming(() => setMark(k, marks[current][k] === `m${selected}` ? null : `m${selected}`)),
+    maybe: unlessBlooming(() => toggleMaybe(k)),
   });
 }
 
@@ -255,23 +320,26 @@ function render() {
       continue;
     }
 
-    const v = st[k];
+    const cell = st[k];
+    const hasSeed = cell?.seed !== undefined;
     let html = "";
-    let label = `Case vide, ${where}`;
-    if (v?.startsWith("s")) {
-      const f = Number(v[1]) as Flower;
-      b.classList.add("seed-cell", `f${f}`);
-      html = SEED_SVG;
-      label = `Graine ${OF[f]}, ${where}`;
-    } else if (v?.startsWith("m")) {
-      const f = Number(v[1]) as Flower;
-      b.classList.add(`f${f}`);
-      html = '<span class="maybe"></span>';
-      label = `Possible pour le ${NAMES[f]}, ${where}`;
-    } else if (v === "x") {
-      html = '<span class="cross"></span>';
-      label = `Croix, ${where}`;
+    const parts: string[] = [];
+    if (cell?.seed !== undefined) {
+      b.classList.add("seed-cell", `f${cell.seed}`);
+      html += SEED_SVG;
+      parts.push(`graine ${OF[cell.seed]}`);
     }
+    if (cell?.cross) {
+      html += '<span class="cross"></span>';
+      parts.push("croix");
+    }
+    if (cell?.maybe?.length) {
+      // un emplacement fixe par fleur : coquelicot à gauche, bleuet au centre, bouton d'or à droite
+      const slots = FLOWERS.map((f) => `<i class="f${f}${cell.maybe!.includes(f) ? " on" : ""}"></i>`).join("");
+      html += `<span class="maybes${hasSeed || cell.cross ? " low" : ""}">${slots}</span>`;
+      parts.push(`possible pour ${cell.maybe.map((f) => `le ${NAMES[f]}`).join(", ")}`);
+    }
+    const label = `${parts.length ? parts.join(", ") : "Case vide"}, ${where}`;
 
     if (view === "bloom") {
       const g = garden.get(k);
@@ -280,11 +348,11 @@ function render() {
         const pop = g.day === bloomDay && !bloomDone ? "pop" : "";
         if (g.kind === "nue") {
           b.classList.add("bare-bloom");
-          html = (v?.startsWith("s") ? SEED_SVG : "") + dayTag(g.day);
+          html = (hasSeed ? SEED_SVG : "") + dayTag(g.day);
         } else {
           b.classList.remove("f0", "f1", "f2");
           b.classList.add(`f${g.kind}`);
-          html = FLOWER_SVG(pop) + (v?.startsWith("s") ? SEED_SVG : "") + dayTag(g.day);
+          html = FLOWER_SVG(pop) + (hasSeed ? SEED_SVG : "") + dayTag(g.day);
         }
       }
     }
@@ -379,19 +447,17 @@ renderDaysButton();
 $("hint").addEventListener("click", () => {
   const p = puzzle();
   const seeds = placedSeeds();
-  const st = marks[current];
   const wrong = FLOWERS.find((f) => seeds[f] && seeds[f] !== key(...p.seeds[f]));
   if (wrong !== undefined) {
-    delete st[seeds[wrong]!];
-    stopBloom();
-    render();
-    save();
+    updateCell(seeds[wrong]!, (cell) => {
+      delete cell.seed;
+    });
     return setStatus(`La graine ${OF[wrong]} n'était pas au bon endroit : je l'ai retirée.`);
   }
   const next = FLOWERS.find((f) => !seeds[f]);
   if (next === undefined) return setStatus("Tes trois graines sont déjà bien placées. Fais pousser le jardin !");
   const [r, c] = p.seeds[next];
-  setMark(key(r, c), `s${next}`);
+  updateCell(key(r, c), (cell) => plantSeed(cell, next));
   setStatus(`La graine ${OF[next]} était en ligne ${r + 1}, colonne ${c + 1}.`);
 });
 

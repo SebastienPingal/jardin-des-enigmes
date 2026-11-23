@@ -47,10 +47,18 @@ svg.seed path { fill: var(--fc); stroke: var(--paper); stroke-width: 2; }
 .cell.clue.bad { box-shadow: inset 0 0 0 3px var(--bad); }
 
 /* Marques du joueur */
-.cell .maybe {
-  position: relative; width: 34%; aspect-ratio: 1; border-radius: 50%;
-  border: 3px dashed var(--fc); opacity: .85;
+/* Marques « possible » : un emplacement fixe par fleur, cumulables sur une même case */
+.cell .maybes {
+  position: absolute; left: 0; right: 0; top: 50%; transform: translateY(-50%);
+  display: flex; justify-content: center; gap: 6%; pointer-events: none;
 }
+.cell .maybes.low { top: auto; bottom: 7%; transform: none; }
+.cell .maybes i {
+  display: block; width: 22%; aspect-ratio: 1; border-radius: 50%;
+  border: 2.5px dashed var(--fc); opacity: .9; visibility: hidden;
+}
+.cell .maybes.low i { width: 15%; border-width: 2px; }
+.cell .maybes i.on { visibility: visible; }
 .cell.seed-cell { background: color-mix(in srgb, var(--fc) 16%, var(--gravel)); }
 
 /* Floraison */
