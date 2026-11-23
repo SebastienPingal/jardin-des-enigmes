@@ -69,6 +69,19 @@ header { display: grid; gap: 6px; }
 }
 .cell .cross::after { transform: translate(-50%, -50%) rotate(-45deg); }
 
+/* Interrupteur stylo / crayon */
+.mode-switch {
+  display: inline-flex; padding: 3px; gap: 3px;
+  background: var(--night-2); border: 1px solid var(--gravel-line); border-radius: 999px;
+}
+.mode-switch button {
+  font: 600 14px var(--font-body); color: var(--muted);
+  background: transparent; border: 0; border-radius: 999px;
+  padding: 6px 16px; cursor: pointer;
+}
+.mode-switch button[aria-checked="true"] { background: var(--paper); color: var(--night); }
+.mode-switch button:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+
 .controls { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .status { min-height: 1.6em; text-align: center; color: var(--muted); max-width: 440px; }
 .status.win { color: var(--glow); font-weight: 700; }

@@ -26,5 +26,5 @@ Code partagé :
 
 - `src/styles/base.css` : thème (couleurs, polices).
 - `src/styles/game.css` : mise en page d'une page de jeu (plateau, onglets, règles, cases, croix).
-- `src/shared/cellInput.ts` : contrôleur de saisie. Les gestes sont les mêmes partout (clic gauche, clic droit ou appui long pour la croix, touches `X` et `P`) ; chaque jeu fournit ses propres effets via `bindCellInput(case, { primary, cross, maybe })`.
+- `src/shared/cellInput.ts` : contrôleur de saisie stylo / crayon. Un interrupteur « Poser / Noter » choisit l'effet du clic ; Maj + clic (ou `P`) note toujours, clic droit, appui long ou `X` posent une croix, `N` bascule le mode. Chaque jeu crée le contrôleur avec `createInputController({ switchEl, placeLabel })` et fournit ses effets via `input.bind(case, { place, note, cross })`.
 - `src/shared/storage.ts` : sauvegarde locale de la progression.

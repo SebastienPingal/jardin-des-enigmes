@@ -21,6 +21,7 @@
     <div class="main">
       <section class="board-col" aria-label="Plateau de jeu">
         <div class="tabs" id="tabs" role="group" aria-label="Choix du jardin"></div>
+        <div id="mode"></div>
         <div class="board" id="board" role="grid" aria-label="Jardin"></div>
         <div class="counter" id="counter"></div>
         <div class="controls">
@@ -40,7 +41,7 @@
           <li><p>Un <b>chiffre</b> indique combien de lanternes éclairent sa case. On ne pose rien sur un chiffre ni sur un rocher.</p></li>
         </ol>
         <div class="note">
-          <p><b>Clic gauche</b> : lanterne, puis marque « possible » (lanterne en pointillés), puis case vide.<br><b>Clic droit</b> : croix « pas ici ». Sur téléphone, fais un <b>appui long</b>. Au clavier, utilise <kbd>X</kbd> pour la croix et <kbd>P</kbd> pour « possible ».</p>
+          <p><b>Poser / Noter</b> : en mode Poser, un clic pose ou retire une lanterne ; en mode Noter, il pose ou retire une marque « possible » (lanterne en pointillés). <kbd>N</kbd> bascule le mode, <b>Maj + clic</b> note sans en changer.<br><b>Clic droit</b> ou <b>appui long</b> : croix « pas ici » (aussi <kbd>X</kbd>).</p>
           <p>Chaque jardin a une seule solution, qu'on trouve par pure déduction, sans deviner.</p>
           <p>Astuce : commence par les <b>0</b>. Une case marquée 0 interdit toutes les cases d'où une lanterne pourrait l'atteindre.</p>
         </div>

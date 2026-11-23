@@ -21,7 +21,8 @@
     <div class="main">
       <section class="board-col" aria-label="Plateau de jeu">
         <div class="tabs" id="tabs" role="group" aria-label="Choix du jardin"></div>
-        <div class="palette" id="palette" role="radiogroup" aria-label="Graine à planter"></div>
+        <div id="mode"></div>
+        <div class="palette" id="palette" role="radiogroup" aria-label="Fleur choisie"></div>
         <div class="board" id="board" role="grid" aria-label="Jardin"></div>
         <div class="counter" id="counter"></div>
         <div class="controls">
@@ -44,8 +45,8 @@
         <div class="note">
           <p><b>Lire les indices.</b> « Bleuet, jour 3 » : la graine du bleuet est à exactement 3 pas, et les deux autres sont plus loin. Une fleur sans jour : sa graine est plus proche que les deux autres. Terre nue : les deux graines les plus proches sont exactement à la même distance, et la troisième est plus loin.</p>
           <p><b>Astuce de la terre nue.</b> Deux graines ne peuvent être à égalité que si elles sont séparées par un nombre pair de pas : sur un damier, elles seraient sur des cases de même couleur. Deux graines voisines ne créent donc jamais de terre nue.</p>
-          <p><b>Clic gauche</b> : graine de la fleur choisie, puis marque « possible », puis rien. Les « possible » de plusieurs fleurs se cumulent sur une même case sans s'effacer. <b>Clic droit</b> ou <b>appui long</b> : croix. Au clavier, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> choisissent la fleur, <kbd>P</kbd> marque « possible », <kbd>X</kbd> pose une croix.</p>
-          <p><b>Graine inconnue</b> (<kbd>4</kbd>) : choisis « inconnue » dans la palette pour noter qu'une graine est là sans savoir laquelle. Tu peux en poser plusieurs ; planter ensuite une fleur sur la case la remplace.</p>
+          <p><b>Planter / Noter</b> : choisis une fleur dans la palette. En mode Planter, un clic pose ou retire sa graine. En mode Noter, un clic coche ou décoche sa note, une pastille dans un coin fixe de la case ; les notes de plusieurs fleurs se cumulent. <kbd>N</kbd> bascule le mode, <b>Maj + clic</b> note sans en changer.</p>
+          <p><b>Inconnue</b> : une note grise pour « une graine est ici, mais laquelle ? ». <b>Clic droit</b> ou <b>appui long</b> : croix. Au clavier, <kbd>1</kbd> à <kbd>4</kbd> choisissent dans la palette, <kbd>X</kbd> pose une croix.</p>
           <p>Quand les trois graines sont plantées, fais pousser le jardin pour vérifier.</p>
         </div>
       </aside>

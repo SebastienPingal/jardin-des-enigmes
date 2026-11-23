@@ -1,7 +1,7 @@
 import "../../styles/base.css";
 import "../../styles/game.css";
 import "./lanternes.css";
-import { bindCellInput, refocusCell } from "../../shared/cellInput";
+import { createInputController, refocusCell, type InputMode } from "../../shared/cellInput";
 import { load, save as persist } from "../../shared/storage";
 import { PUZZLES } from "./puzzles";
 
@@ -17,14 +17,16 @@ const LANTERN_HTML = '<i class="roof"></i><i class="box"></i><i class="post"></i
 let current = 0;
 let state: Marks[] = PUZZLES.map(() => ({}));
 let solved: boolean[] = PUZZLES.map(() => false);
+let mode: InputMode = "place";
 
-const saved = load<{ state: Marks[]; solved: boolean[]; current: number }>(STORAGE_KEY);
+const saved = load<{ state: Marks[]; solved: boolean[]; current: number; mode?: InputMode }>(STORAGE_KEY);
 if (saved && Array.isArray(saved.state) && saved.state.length === PUZZLES.length) {
   state = saved.state;
   solved = saved.solved ?? solved;
   current = saved.current ?? 0;
+  mode = saved.mode ?? "place";
 }
-const save = () => persist(STORAGE_KEY, { state, solved, current });
+const save = () => persist(STORAGE_KEY, { state, solved, current, mode });
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement;
 const boardEl = $("board");
@@ -101,22 +103,25 @@ function setMark(k: string, mark: Mark | 0) {
   if (isSolved(analyse()) && !solved[current]) win();
 }
 
-function cycle(k: string) {
-  // vide → lanterne → possible → vide (une croix devient lanterne)
-  const v = state[current][k] ?? 0;
-  setMark(k, v === LANTERN ? MAYBE : v === MAYBE ? 0 : LANTERN);
-}
+/** Pose la marque, ou l'enlève si elle est déjà là. */
+const toggle = (k: string, mark: Mark) => setMark(k, state[current][k] === mark ? 0 : mark);
 
-function toggleCross(k: string) {
-  setMark(k, state[current][k] === CROSS ? 0 : CROSS);
-}
+const input = createInputController({
+  switchEl: $("mode"),
+  placeLabel: "Poser",
+  initialMode: mode,
+  onModeChange: (m) => {
+    mode = m;
+    save();
+  },
+});
 
 function bindCell(b: HTMLButtonElement, k: string) {
   b.dataset.key = k;
-  bindCellInput(b, {
-    primary: () => cycle(k),
-    cross: () => toggleCross(k),
-    maybe: () => setMark(k, state[current][k] === MAYBE ? 0 : MAYBE),
+  input.bind(b, {
+    place: () => toggle(k, LANTERN),
+    note: () => toggle(k, MAYBE),
+    cross: () => toggle(k, CROSS),
   });
 }
 
