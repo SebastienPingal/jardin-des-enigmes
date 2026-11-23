@@ -114,7 +114,7 @@ function renderLexicon() {
 function questionHtml(q: Question, qi: number): string {
   const ok = solved[current][qi];
   const draft = drafts[current][qi] ?? "";
-  let body = `<p class="q-prompt">${q.prompt}</p>`;
+  let body = "";
   if (q.kind === "read-number") {
     body += `<div class="q-msg">${message(q.glyphs)}</div>`;
     body += ok
