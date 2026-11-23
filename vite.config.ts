@@ -11,6 +11,7 @@ export default defineConfig({
       input: {
         accueil: page("./index.html"),
         lanternes: page("./lanternes/index.html"),
+        racines: page("./racines/index.html"),
       },
     },
   },

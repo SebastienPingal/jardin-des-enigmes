@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Racines · Jardin des énigmes</title>
+  <meta name="description" content="Le jardin a fleuri. Retrouve où étaient plantées les trois graines. Puzzle de déduction à solution unique.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="back" href="/">← Jardin des énigmes</a>
+      <div class="eyebrow">Puzzle de déduction · 6 × 6</div>
+      <h1>Ra<span>cines</span></h1>
+      <p class="lede">Au printemps, le jardin a fleuri. De l'été, il ne reste que quelques fleurs. Retrouve où le jardinier avait planté ses trois graines.</p>
+    </header>
+
+    <div class="main">
+      <section class="board-col" aria-label="Plateau de jeu">
+        <div class="tabs" id="tabs" role="group" aria-label="Choix du jardin"></div>
+        <div class="palette" id="palette" role="radiogroup" aria-label="Graine à planter"></div>
+        <div class="board" id="board" role="grid" aria-label="Jardin"></div>
+        <div class="counter" id="counter"></div>
+        <div class="controls">
+          <button class="btn primary" id="grow" type="button">Faire pousser</button>
+          <button class="btn" id="hint" type="button">Un indice</button>
+          <button class="btn" id="reset" type="button">Recommencer</button>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <aside class="rules">
+        <h2>Règles</h2>
+        <ol>
+          <li><p>Trois graines sont cachées : un <b class="c0">coquelicot</b>, un <b class="c1">bleuet</b> et un <b class="c2">bouton d'or</b>.</p></li>
+          <li><p>Chaque jour, les racines de chaque graine avancent <b>d'une case</b> (haut, bas, gauche, droite). Elles <b>contournent les rochers</b> et passent sous les autres fleurs.</p></li>
+          <li><p>Une case fleurit de la <b>première racine</b> qui l'atteint. Si deux racines arrivent <b>le même jour</b>, la case reste de la <b>terre nue</b>.</p></li>
+          <li><p>Les indices montrent le jardin fleuri : une fleur avec son <b>jour d'arrivée</b>, une fleur seule, ou de la terre nue. Aucune graine n'est sous un indice.</p></li>
+        </ol>
+        <div class="note">
+          <p><b>Lire les indices.</b> « Bleuet, jour 3 » : la graine du bleuet est à exactement 3 pas, et les deux autres sont plus loin. Une fleur sans jour : sa graine est plus proche que les deux autres. Terre nue : les deux graines les plus proches sont à égalité.</p>
+          <p><b>Clic gauche</b> : graine de la couleur choisie, puis marque « possible », puis case vide. <b>Clic droit</b> ou <b>appui long</b> : croix. Au clavier, <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> choisissent la fleur, <kbd>P</kbd> marque « possible », <kbd>X</kbd> pose une croix.</p>
+          <p>Quand les trois graines sont plantées, fais pousser le jardin pour vérifier.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="/src/games/racines/main.ts"></script>
+</body>
+</html>
