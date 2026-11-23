@@ -50,18 +50,30 @@ let selected = 0; // index dans la liste des animaux du jardin courant
 let mode: InputMode = "place";
 let slots: SlotMarks[][] = PUZZLES.map((p) => p.order.map(() => ({})));
 let solved: boolean[] = PUZZLES.map(() => false);
+// Colliers de brouillon : drafts[jardin][étape][position] = perle supposée, ou null
+type Draft = (number | null)[];
+let drafts: Record<number, Draft>[] = PUZZLES.map(() => ({}));
 
-const saved = load<{ slots: SlotMarks[][]; solved: boolean[]; current: number; selected: number; mode?: InputMode }>(
-  STORAGE_KEY,
-);
+const saved = load<{
+  slots: SlotMarks[][];
+  solved: boolean[];
+  current: number;
+  selected: number;
+  mode?: InputMode;
+  drafts?: Record<number, Draft>[];
+}>(STORAGE_KEY);
 if (saved && Array.isArray(saved.slots) && saved.slots.length === PUZZLES.length) {
   slots = saved.slots;
   solved = saved.solved ?? solved;
   current = saved.current ?? 0;
   selected = saved.selected ?? 0;
   mode = saved.mode ?? "place";
+  if (Array.isArray(saved.drafts) && saved.drafts.length === PUZZLES.length) drafts = saved.drafts;
 }
-const save = () => persist(STORAGE_KEY, { slots, solved, current, selected, mode });
+const save = () => persist(STORAGE_KEY, { slots, solved, current, selected, mode, drafts });
+
+/* Menu de choix de perle ouvert sous un emplacement de brouillon */
+let picker: { step: number; pos: number } | null = null;
 
 /* Vue « passage » : le collier fait le tour, étape par étape */
 let view: "edit" | "play" = "edit";
@@ -171,7 +183,12 @@ function selectAnimal(i: number) {
 document.addEventListener("keydown", (e) => {
   const n = Number(e.key);
   if (Number.isInteger(n) && n >= 1 && n <= puzzle().animals.length) selectAnimal(n - 1);
-  if (e.key === "Escape" && view === "play") backToEdit();
+  if (e.key === "Escape" && picker) {
+    const { step, pos } = picker;
+    picker = null;
+    render();
+    timelineEl.querySelector<HTMLElement>(`[data-step="${step}"][data-pos="${pos}"]`)?.focus({ preventScroll: true });
+  } else if (e.key === "Escape" && view === "play") backToEdit();
 });
 
 /* --- Rendu --- */
@@ -204,6 +221,65 @@ function renderAnimals() {
 function necklaceRow(label: string, html: string, aria: string, cls = "") {
   return `<div class="row ${cls}"><span class="row-label">${label}</span><div class="necklace" role="img" aria-label="${aria}">${html}</div></div>`;
 }
+
+/** Collier intermédiaire : perles aperçues fixes, les autres sont un brouillon à remplir. */
+function draftRow(step: number, label: string, clueBeads: (number | null)[]) {
+  const draft = drafts[current][step] ?? [];
+  const cells = clueBeads
+    .map((b, pos) => {
+      if (b !== null) return bead(b);
+      const d = draft[pos] ?? null;
+      const open = picker?.step === step && picker.pos === pos;
+      return (
+        `<button type="button" class="bead-btn${open ? " open" : ""}" data-step="${step}" data-pos="${pos}" ` +
+        `aria-expanded="${open}" aria-label="Brouillon ${label.toLowerCase()}, perle ${pos + 1} : ${d === null ? "vide" : BEADS[d].name}">` +
+        `${d === null ? unknownBead() : bead(d, "draft")}</button>`
+      );
+    })
+    .join("");
+  let html = `<div class="row"><span class="row-label">${label}</span><div class="necklace">${cells}</div></div>`;
+  if (picker?.step === step) {
+    const fixed = new Set(clueBeads.filter((b): b is number => b !== null));
+    html +=
+      `<div class="bead-picker" role="group" aria-label="Perle ${picker.pos + 1}, ${label.toLowerCase()}">` +
+      BEADS.map(
+        (_, b) =>
+          `<button type="button" data-pick="${b}"${fixed.has(b) ? " disabled" : ""} aria-label="${BEADS[b].name}">${bead(b)}</button>`,
+      ).join("") +
+      '<button type="button" class="erase" data-pick="-1">Effacer</button></div>';
+  }
+  return html;
+}
+
+function setDraft(step: number, pos: number, b: number) {
+  const row = (drafts[current][step] ??= [null, null, null, null, null, null]);
+  if (b >= 0) {
+    // les six perles sont toutes différentes : on retire cette perle de son ancienne place sur la ligne
+    for (let i = 0; i < row.length; i++) if (row[i] === b) row[i] = null;
+    row[pos] = b;
+  } else {
+    row[pos] = null;
+  }
+  picker = null;
+  save();
+  render();
+  timelineEl.querySelector<HTMLElement>(`[data-step="${step}"][data-pos="${pos}"]`)?.focus({ preventScroll: true });
+}
+
+// Brouillons : un seul écouteur pour toute la frise
+timelineEl.addEventListener("click", (e) => {
+  const target = e.target as HTMLElement;
+  const pick = target.closest<HTMLElement>("[data-pick]");
+  if (pick && picker) return setDraft(picker.step, picker.pos, Number(pick.dataset.pick));
+  const spot = target.closest<HTMLElement>("[data-step]");
+  if (!spot) return;
+  if (view === "play") return backToEdit();
+  const step = Number(spot.dataset.step), pos = Number(spot.dataset.pos);
+  picker = picker?.step === step && picker.pos === pos ? null : { step, pos };
+  render();
+  timelineEl.querySelector<HTMLElement>(picker ? "[data-pick]:not([disabled])" : `[data-step="${step}"][data-pos="${pos}"]`)
+    ?.focus({ preventScroll: true });
+});
 
 function render() {
   const p = puzzle();
@@ -258,7 +334,9 @@ function render() {
     const known = expected.some((b) => b !== null);
     const label = isEnd ? "Arrivée" : `Après le ${ordinal(step)}`;
     let rows = "";
-    if (known) {
+    if (view === "edit" && !isEnd) {
+      rows += draftRow(step, label, expected);
+    } else if (known) {
       rows += necklaceRow(
         label,
         expected.map((b) => (b === null ? unknownBead() : bead(b))).join(""),
@@ -371,6 +449,8 @@ $("hint").addEventListener("click", () => {
 
 $("reset").addEventListener("click", () => {
   slots[current] = puzzle().order.map(() => ({}));
+  drafts[current] = {};
+  picker = null;
   solved[current] = false;
   stopPlay();
   save();
@@ -386,6 +466,7 @@ PUZZLES.forEach((p, i) => {
   t.addEventListener("click", () => {
     current = i;
     selected = 0;
+    picker = null;
     stopPlay();
     save();
     setStatus("");

@@ -63,6 +63,35 @@
   @keyframes slide-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 }
 
+/* Brouillon : emplacements à remplir et perles supposées */
+.bead-btn {
+  position: relative; display: grid; place-items: center;
+  width: 100%; max-width: 40px; aspect-ratio: 1; padding: 0; border: 0; background: transparent;
+  cursor: pointer; border-radius: 50%; -webkit-tap-highlight-color: transparent;
+}
+.bead-btn .bead.unknown { width: 100%; }
+.bead-btn:hover .bead.unknown, .bead-btn.open .bead.unknown { border-color: var(--glow); color: var(--glow); }
+.bead-btn:focus-visible { outline: 2px solid var(--glow); outline-offset: 3px; }
+.bead.draft svg { opacity: .8; }
+.bead.draft::after {
+  content: ""; position: absolute; inset: -4px; border-radius: 50%; border: 1.5px dashed var(--muted);
+}
+
+.bead-picker {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  margin: 2px 0 4px 102px; padding: 8px; width: fit-content; max-width: calc(100% - 102px);
+  background: var(--night-2); border: 1px solid var(--glow); border-radius: 12px;
+}
+.bead-picker button {
+  display: grid; place-items: center; width: 40px; height: 40px; padding: 4px;
+  border-radius: 8px; border: 1px solid var(--gravel-line); background: var(--night); cursor: pointer;
+}
+.bead-picker button .bead { max-width: 28px; }
+.bead-picker button:disabled { opacity: .25; cursor: not-allowed; }
+.bead-picker button:not(:disabled):hover { border-color: var(--glow); }
+.bead-picker button:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+.bead-picker .erase { width: auto; padding: 0 12px; font: 500 13px var(--font-body); color: var(--muted); }
+
 /* La place d'un animal */
 .slot {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
@@ -101,4 +130,5 @@
   .positions { grid-template-columns: 64px repeat(6, minmax(0, 1fr)); gap: 0 6px; }
   .necklace { gap: 6px; }
   .row-label { font-size: 12px; }
+  .bead-picker { margin-left: 0; max-width: 100%; }
 }
