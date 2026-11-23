@@ -72,7 +72,7 @@ export const LEVELS: Level[] = [
       { kind: "write", prompt: "Écris : seize points.", scene: { kind: "dots", n: 16 }, answer: "CBB" },
     ],
     epilogue:
-      "Ils comptent par paquets de quatre, comme nous comptons par dix. Tes réponses partent vers eux, mais le signal ne les attend pas : il poursuit sa leçon, imperturbable. Ce n'est pas une conversation. C'est un message émis il y a quarante ans. Les images changent : cette fois, ce sont des astres.",
+      "Ils comptent par paquets de quatre, comme nous comptons par dix. Tes réponses partent vers eux, mais le signal ne les attend pas. Ce n'est pas une conversation : c'est un message émis il y a quarante ans.",
   },
   {
     title: "Le ciel",
@@ -108,7 +108,7 @@ export const LEVELS: Level[] = [
       },
     ],
     epilogue:
-      "Leur monde tourne autour de deux soleils, accompagné de deux lunes. Ta description du nôtre est partie vers eux : huit planètes, un seul soleil, une lune. Elle mettra quarante ans à leur parvenir. Le signal, lui, change de rythme : il arrive à la partie qu'ils voulaient vraiment nous dire.",
+      "Leur monde tourne autour de deux soleils, accompagné de deux lunes. Ta description du nôtre est partie vers eux : huit planètes, un seul soleil, une lune. Elle mettra quarante ans à leur parvenir.",
   },
   {
     title: "Le message",
