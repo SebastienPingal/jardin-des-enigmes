@@ -14,8 +14,9 @@ let notes: Record<string, string> = {};
 
 const saved = load<{ current: number; solved: boolean[][]; drafts: string[][]; notes: Record<string, string> }>(STORAGE_KEY);
 if (saved && Array.isArray(saved.solved) && saved.solved.length === LEVELS.length) {
-  solved = saved.solved;
-  drafts = saved.drafts ?? drafts;
+  // Les questions d'une partie peuvent changer d'une version à l'autre : on recale les tableaux sauvegardés.
+  solved = LEVELS.map((l, i) => l.questions.map((_, q) => !!saved.solved[i]?.[q]));
+  drafts = LEVELS.map((l, i) => l.questions.map((_, q) => saved.drafts?.[i]?.[q] ?? ""));
   notes = saved.notes ?? {};
   current = saved.current ?? 0;
 }
@@ -90,6 +91,31 @@ function renderTransmissions() {
     .join("");
 }
 
+/** Dernier message, sans image ni question : le joueur le déchiffre seul, la traduction vient après. */
+function renderFinale() {
+  const finale = LEVELS[current].finale;
+  const el = $("finale");
+  if (!finale) {
+    el.hidden = true;
+    el.innerHTML = "";
+    return;
+  }
+  const done = levelDone(current);
+  el.hidden = false;
+  el.innerHTML =
+    `<h2 class="section-title">Dernier message</h2>` +
+    `<div class="finale-box">${finale.lines
+      .map(
+        (l) =>
+          `<div class="t-text">${message(l)}` +
+          (done ? `<span class="gloss">${[...l].map((g) => `<span>${escapeHtml(GLOSS[g])}</span>`).join("")}</span>` : "") +
+          `</div>`,
+      )
+      .join("")}` +
+    (done ? `<p class="finale-translation">« ${escapeHtml(finale.translation)} »</p>` : "") +
+    `</div>`;
+}
+
 function renderLexicon() {
   const lex = $("lexicon");
   lex.innerHTML = "";
@@ -121,7 +147,7 @@ function questionHtml(q: Question, qi: number): string {
       ? `<p class="q-done">✓ ${q.answer} points.</p>`
       : `<div class="q-answer"><input type="number" min="0" max="999" inputmode="numeric" id="num-${qi}" value="${escapeHtml(draft)}" aria-label="Ta traduction">` +
         `<button class="btn primary" type="button" data-check="${qi}">Vérifier</button></div>`;
-  } else if (q.kind === "write") {
+  } else {
     body += `<figure class="q-scene">${sceneSvg(q.scene)}</figure>`;
     if (ok) {
       body += `<p class="q-done">✓ ${message(q.answer)}</p>`;
@@ -136,15 +162,6 @@ function questionHtml(q: Question, qi: number): string {
         `<button class="btn" type="button" data-clear="${qi}">Vider</button>` +
         `<button class="btn primary" type="button" data-check="${qi}">Envoyer</button></div></div>`;
     }
-  } else {
-    body += `<div class="q-msg lines">${q.lines.map((l) => message(l)).join("")}</div>`;
-    body += `<div class="options" role="radiogroup" aria-label="Traductions possibles">${q.options
-      .map(
-        (o) =>
-          `<label class="option${ok && o.id === q.answer ? " right" : ""}"><input type="radio" name="opt-${qi}" value="${o.id}"${draft === o.id || (ok && o.id === q.answer) ? " checked" : ""}${ok ? " disabled" : ""}> <span>${o.text}</span></label>`,
-      )
-      .join("")}</div>`;
-    if (!ok) body += `<div class="q-actions"><button class="btn primary" type="button" data-check="${qi}">C'est ça</button></div>`;
   }
   return `<li class="question${ok ? " solved" : ""}" data-qi="${qi}"><div class="q-body">${body}</div><p class="q-feedback" id="fb-${qi}" role="status"></p></li>`;
 }
@@ -154,6 +171,7 @@ function render() {
   renderTabs();
   $("intro").textContent = level.intro;
   renderTransmissions();
+  renderFinale();
   $("questions").innerHTML = level.questions.map(questionHtml).join("");
   renderLexicon();
   const ep = $("epilogue");
@@ -192,12 +210,8 @@ function check(qi: number) {
     const v = (document.getElementById(`num-${qi}`) as HTMLInputElement | null)?.value ?? "";
     drafts[current][qi] = v;
     right = Number(v) === q.answer && v.trim() !== "";
-  } else if (q.kind === "write") {
-    right = drafts[current][qi] === q.answer;
   } else {
-    const picked = document.querySelector<HTMLInputElement>(`input[name="opt-${qi}"]:checked`);
-    drafts[current][qi] = picked?.value ?? "";
-    right = picked?.value === q.answer;
+    right = drafts[current][qi] === q.answer;
   }
   if (!right) {
     save();

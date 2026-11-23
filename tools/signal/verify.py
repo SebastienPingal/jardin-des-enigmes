@@ -128,12 +128,6 @@ L3_EXAMPLES = [
 ]
 L3_WRITE = [("die", ("soleil", 3), True), ("go", ("etre", 1), ("planete", 2), False)]
 L3_FINAL = [("die", ("soleil", 2), True), ("go", ("etre", 64), ("soleil", 1), True)]
-L3_OPTIONS = {
-    "a": [("die", ("soleil", 2), True), ("go", ("etre", 64), ("soleil", 1), True)],
-    "b": [("die", ("soleil", 2), False), ("go", ("etre", 64), ("soleil", 1), False)],
-    "c": [("die", ("soleil", 2), True), ("go", ("etre", 16), ("soleil", 2), True)],
-    "d": [("die", ("soleil", 1), True), ("go", ("etre", 64), ("soleil", 2), True)],
-}
 
 
 def level2():
@@ -168,11 +162,7 @@ def level3():
                 hyps.append(g)
     writes = [(s, {g.say(s) for g in hyps}) for s in L3_WRITE]
     final = [T.say(s) for s in L3_FINAL]
-    readings = set()
-    for g in hyps:
-        ok = tuple(k for k, opt in L3_OPTIONS.items() if [g.say(s) for s in opt] == final)
-        readings.add(ok)
-    return len(hyps), writes, final, readings, seen
+    return len(hyps), writes, final, seen
 
 
 if __name__ == "__main__":
@@ -189,9 +179,10 @@ if __name__ == "__main__":
     for s, outs in writes:
         print("  écrire", s, "->", outs, "OK" if len(outs) == 1 else "AMBIGU")
 
-    n, writes, final, readings, seen = level3()
+    n, writes, final, seen = level3()
     print("Niveau 3 :", n, "hypothèse(s) ; transmissions :", seen)
     for s, outs in writes:
         print("  écrire", s, "->", outs, "OK" if len(outs) == 1 else "AMBIGU")
-    print("  message final", final, "-> lectures possibles", readings, "OK" if readings == {("a",)} else "AMBIGU")
+    # Le message final n'est pas une question : il suffit qu'une seule grammaire reste possible pour qu'il n'ait qu'un sens.
+    print("  message final", final, "OK (une seule grammaire possible)" if n == 1 else "AMBIGU")
     print("  questions niveau 1 en glyphes :", {n: numeral(n) for n in L1_WRITE})

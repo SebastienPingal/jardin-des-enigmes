@@ -42,14 +42,15 @@ export interface Transmission {
 
 export type Question =
   | { kind: "read-number"; glyphs: string; answer: number }
-  | { kind: "write"; scene: Scene; answer: string }
-  | { kind: "choose"; lines: string[]; options: { id: string; text: string }[]; answer: string };
+  | { kind: "write"; scene: Scene; answer: string };
 
 export interface Level {
   title: string;
   intro: string;
   transmissions: Transmission[];
   questions: Question[];
+  /** Dernier message, sans image ni question : sa traduction n'apparaît qu'une fois la partie résolue. */
+  finale?: { lines: string[]; translation: string };
   epilogue: string;
 }
 
@@ -147,19 +148,11 @@ export const LEVELS: Level[] = [
         scene: { kind: "go", s: { noun: "etre", n: 1 }, g: { noun: "planete", n: 2 }, fut: false },
         answer: "IFDK",
       },
-      {
-        kind: "choose",
-        lines: ["EDJL", "ICBBBEKL"],
-       
-        options: [
-          { id: "a", text: "Deux soleils s'éteindront. Soixante-quatre êtres iront vers un soleil." },
-          { id: "b", text: "Deux soleils s'éteignent. Soixante-quatre êtres vont vers un soleil." },
-          { id: "c", text: "Deux soleils s'éteindront. Seize êtres iront vers deux soleils." },
-          { id: "d", text: "Un soleil s'éteindra. Soixante-quatre êtres iront vers deux soleils." },
-        ],
-        answer: "a",
-      },
     ],
+    finale: {
+      lines: ["EDJL", "ICBBBEKL"],
+      translation: "Deux soleils s'éteindront. Soixante-quatre êtres iront vers un soleil.",
+    },
     epilogue:
       "Leurs deux soleils allaient s'éteindre. Soixante-quatre d'entre eux devaient partir vers un soleil, un seul. Ce message a quarante ans : ils sont peut-être déjà en route. Dans quarante ans, ta réponse leur parviendra : huit planètes, une lune, un soleil. Sauront-ils qu'ils ont trouvé ? Le signal se tait. Sur l'écran de la station, la dernière image reste figée : quatre doigts levés, comme un salut.",
   },
