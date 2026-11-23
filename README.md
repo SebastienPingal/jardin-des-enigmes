@@ -9,6 +9,8 @@ Des puzzles de logique originaux, à solution unique, jouables dans le navigateu
 
 - **Ballet** (`/ballet/`) : six lucioles dansent en ligne et enchaînent 4 à 6 figures (volte-face, chassé-croisé, grand écart, rondes…), chacune réordonnant toujours la ligne de la même façon. À partir de la ligne au début et à la fin du bal, de lucioles aperçues en route et de remarques sur l'ordre, retrouver la chorégraphie. Les grilles viennent de `tools/ballet/generate.py`, qui vérifie l'unicité et la résolution en avançant par les deux bouts.
 
+- **Signal** (`/signal/`) : déchiffrement d'une langue extraterrestre. Chaque transmission associe des glyphes à une image ; le joueur déduit le vocabulaire et la grammaire (nombres en base 4, ordre des mots, futur…), répond en glyphes et traduit le dernier message. Trois parties qui racontent une histoire. `tools/signal/verify.py` énumère toutes les grammaires compatibles avec les transmissions et vérifie que chaque réponse est entièrement déterminée.
+
 ## Développement
 
 ```bash

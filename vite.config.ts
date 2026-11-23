@@ -13,6 +13,7 @@ export default defineConfig({
         lanternes: page("./lanternes/index.html"),
         racines: page("./racines/index.html"),
         ballet: page("./ballet/index.html"),
+        signal: page("./signal/index.html"),
       },
     },
   },
