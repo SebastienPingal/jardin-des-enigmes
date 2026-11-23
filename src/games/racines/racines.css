@@ -63,6 +63,19 @@ svg.seed path { fill: var(--fc); stroke: var(--paper); stroke-width: 2; }
   @keyframes pop { from { transform: scale(0) rotate(-40deg); opacity: 0; } to { transform: none; opacity: 1; } }
 }
 
+/* Pastille « attendu » sur les indices pendant la floraison */
+.cell .expect {
+  position: absolute; left: 3px; top: 3px; z-index: 1;
+  display: inline-flex; align-items: center; gap: 2px;
+  padding: 2px 5px 2px 3px; border-radius: 999px;
+  border: 1.5px dashed var(--paper);
+  background: rgba(10, 14, 26, .82);
+  font: 700 11px/1 var(--font-body); color: var(--paper);
+  font-variant-numeric: tabular-nums;
+}
+.cell .expect svg.flower { width: 13px; height: 13px; }
+.cell .expect.expect-bare { padding: 3px 6px; text-transform: uppercase; letter-spacing: .05em; color: #cdb79f; }
+
 /* Palette de graines */
 .palette { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
 .pick {

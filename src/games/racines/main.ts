@@ -190,6 +190,36 @@ function render() {
     }
 
     const clue = clues.get(k);
+    if (clue && view === "bloom") {
+      // Floraison : on montre ce qui a réellement poussé, et l'attendu dans une pastille en coin.
+      b.classList.add("clue");
+      b.tabIndex = -1;
+      const g = garden.get(k);
+      const shown = g && g.day <= bloomDay ? g : undefined;
+      let html = "";
+      let got = "rien pour l'instant";
+      if (shown && shown.kind === "nue") {
+        b.classList.add("bare");
+        html = '<span class="label">nue</span>';
+        got = `terre nue (jour ${shown.day})`;
+      } else if (shown) {
+        const kind = shown.kind as Flower;
+        b.classList.add("bloom", `f${kind}`);
+        const pop = shown.day === bloomDay && !bloomDone ? "pop" : "";
+        html = FLOWER_SVG(pop) + `<span class="day">J${shown.day}</span>`;
+        got = `${NAMES[kind]}, jour ${shown.day}`;
+      }
+      const expected = clue.kind === "nue" ? "terre nue" : `${NAMES[clue.kind]}${clue.day !== null ? `, jour ${clue.day}` : ""}`;
+      html +=
+        clue.kind === "nue"
+          ? '<span class="expect expect-bare">nue</span>'
+          : `<span class="expect f${clue.kind}">${FLOWER_SVG()}${clue.day !== null ? `J${clue.day}` : ""}</span>`;
+      b.innerHTML = html;
+      if (bloomDone) b.classList.add(clueMatches(k, clue.kind, clue.day) ? "ok" : "bad");
+      b.setAttribute("aria-label", `Indice ${where} : attendu ${expected} ; obtenu ${got}`);
+      boardEl.appendChild(b);
+      continue;
+    }
     if (clue) {
       b.classList.add("clue");
       b.tabIndex = -1;
@@ -205,7 +235,6 @@ function render() {
           `Indice : ${NAMES[clue.kind]}${clue.day !== null ? `, arrivé le jour ${clue.day}` : ""}, ${where}`,
         );
       }
-      if (view === "bloom" && bloomDone) b.classList.add(clueMatches(k, clue.kind, clue.day) ? "ok" : "bad");
       boardEl.appendChild(b);
       continue;
     }
@@ -287,7 +316,8 @@ function finishBloom() {
     );
   } else {
     setStatus(
-      `${bad} indice${bad > 1 ? "s ne correspondent" : " ne correspond"} pas (cerclé${bad > 1 ? "s" : ""} de rouge). Touche une case pour replanter.`,
+      `${bad} indice${bad > 1 ? "s ne correspondent" : " ne correspond"} pas (cerclé${bad > 1 ? "s" : ""} de rouge). ` +
+        "La pastille en pointillés montre ce qui était attendu. Touche une case pour replanter.",
       "err",
     );
   }
