@@ -67,9 +67,9 @@ export const LEVELS: Level[] = [
       { glyphs: "AA", scene: { kind: "dots", n: 15 }, caption: "15 points" },
     ],
     questions: [
-      { kind: "read-number", glyphs: "AD", prompt: "Combien de points désigne ce message ?", answer: 14 },
-      { kind: "write", prompt: "Écris : onze points.", scene: { kind: "dots", n: 11 }, answer: "DA" },
-      { kind: "write", prompt: "Écris : seize points.", scene: { kind: "dots", n: 16 }, answer: "CBB" },
+      { kind: "read-number", glyphs: "AD", prompt: "Traduis ce message.", answer: 14 },
+      { kind: "write", prompt: "Écris ce que montre l'image.", scene: { kind: "dots", n: 11 }, answer: "DA" },
+      { kind: "write", prompt: "Écris ce que montre l'image.", scene: { kind: "dots", n: 16 }, answer: "CBB" },
     ],
     epilogue:
       "Ils comptent par paquets de quatre, comme nous comptons par dix. Tes réponses partent vers eux, mais le signal ne les attend pas. Ce n'est pas une conversation : c'est un message émis il y a quarante ans.",
@@ -96,13 +96,13 @@ export const LEVELS: Level[] = [
     questions: [
       {
         kind: "write",
-        prompt: "Écris : huit planètes tournent autour d'un soleil.",
+        prompt: "Écris ce que montre l'image.",
         scene: { kind: "orbit", a: { noun: "planete", n: 8 }, c: { noun: "soleil", n: 1 } },
         answer: "FDBEH",
       },
       {
         kind: "write",
-        prompt: "Écris : une lune tourne autour d'une planète.",
+        prompt: "Écris ce que montre l'image.",
         scene: { kind: "orbit", a: { noun: "lune", n: 1 }, c: { noun: "planete", n: 1 } },
         answer: "GFH",
       },
@@ -137,13 +137,13 @@ export const LEVELS: Level[] = [
     questions: [
       {
         kind: "write",
-        prompt: "Écris : trois soleils s'éteindront.",
+        prompt: "Écris ce que montre l'image.",
         scene: { kind: "die", s: { noun: "soleil", n: 3 }, fut: true },
         answer: "EAJL",
       },
       {
         kind: "write",
-        prompt: "Écris : un être va vers deux planètes.",
+        prompt: "Écris ce que montre l'image.",
         scene: { kind: "go", s: { noun: "etre", n: 1 }, g: { noun: "planete", n: 2 }, fut: false },
         answer: "IFDK",
       },

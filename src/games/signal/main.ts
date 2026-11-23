@@ -119,7 +119,7 @@ function questionHtml(q: Question, qi: number): string {
     body += `<div class="q-msg">${message(q.glyphs)}</div>`;
     body += ok
       ? `<p class="q-done">✓ ${q.answer} points.</p>`
-      : `<div class="q-answer"><input type="number" min="0" max="999" inputmode="numeric" id="num-${qi}" value="${escapeHtml(draft)}" aria-label="Nombre de points">` +
+      : `<div class="q-answer"><input type="number" min="0" max="999" inputmode="numeric" id="num-${qi}" value="${escapeHtml(draft)}" aria-label="Ta traduction">` +
         `<button class="btn primary" type="button" data-check="${qi}">Vérifier</button></div>`;
   } else if (q.kind === "write") {
     body += `<figure class="q-scene">${sceneSvg(q.scene)}</figure>`;
