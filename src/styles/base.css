@@ -1,0 +1,62 @@
+/* Thème commun du Jardin des énigmes : un jardin de nuit, sombre par choix. */
+:root {
+  --night: #111727;
+  --night-2: #182036;
+  --gravel: #222b44;
+  --gravel-line: #2e3958;
+  --stone: #4b5366;
+  --stone-hi: #6a7387;
+  --paper: #ece6d8;
+  --muted: #9aa3b8;
+  --glow: #f4b860;
+  --ok: #9cc79a;
+  --bad: #e6705f;
+  --font-display: "Shippori Mincho", "Hiragino Mincho ProN", Georgia, serif;
+  --font-body: "Zen Kaku Gothic New", "Hiragino Sans", system-ui, sans-serif;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+body {
+  margin: 0;
+  background: radial-gradient(120% 80% at 50% 0%, #1a2340 0%, var(--night) 60%) fixed, var(--night);
+  color: var(--paper);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.55;
+  padding-block: 28px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  min-height: 100vh;
+}
+
+a { color: var(--glow); }
+
+.wrap { max-width: 980px; margin: 0 auto; display: grid; gap: 28px; }
+
+.eyebrow { font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+h1 {
+  font-family: var(--font-display); font-weight: 800; margin: 0;
+  font-size: clamp(40px, 8vw, 64px); line-height: 1; letter-spacing: .01em;
+  text-wrap: balance;
+}
+h1 span { color: var(--glow); text-shadow: 0 0 24px rgba(244, 184, 96, .45); }
+
+.lede { margin: 0; color: var(--muted); max-width: 60ch; }
+
+.back { font-size: 14px; color: var(--muted); text-decoration: none; }
+.back:hover, .back:focus-visible { color: var(--paper); }
+
+.btn {
+  font: 500 15px var(--font-body); cursor: pointer;
+  padding: 9px 16px; border-radius: 8px;
+  border: 1px solid var(--gravel-line); background: var(--night-2); color: var(--paper);
+}
+.btn.primary { background: var(--glow); color: var(--night); border-color: var(--glow); font-weight: 700; }
+.btn:focus-visible, a:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+
+kbd { font-family: var(--font-body); font-size: 12px; border: 1px solid var(--gravel-line); border-radius: 4px; padding: 0 5px; }

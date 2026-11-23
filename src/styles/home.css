@@ -1,0 +1,53 @@
+.intro { display: grid; gap: 10px; padding-block: 24px 8px; }
+
+.games {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+}
+
+.game {
+  height: 100%;
+  display: grid; grid-template-rows: auto 1fr;
+  background: var(--night-2);
+  border: 1px solid var(--gravel-line);
+  border-radius: 12px;
+  overflow: hidden;
+  color: var(--paper);
+  text-decoration: none;
+  transition: border-color .2s ease, transform .2s ease;
+}
+a.game:hover { border-color: var(--glow); transform: translateY(-2px); }
+.game.soon { opacity: .6; }
+
+.meta { display: grid; gap: 6px; padding: 18px 20px 22px; align-content: start; }
+.tag { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.name { font-family: var(--font-display); font-weight: 800; font-size: 28px; line-height: 1.1; }
+.desc { color: var(--muted); font-size: 15px; }
+
+/* Vignettes dessinées en CSS */
+.art { position: relative; display: block; height: 140px; background: var(--gravel); overflow: hidden; }
+.art i { position: absolute; display: block; }
+
+.art-lanternes .glow {
+  left: 50%; top: 50%; width: 22px; height: 26px; transform: translate(-50%, -50%);
+  background: var(--glow); border-radius: 4px;
+  box-shadow: 0 0 30px 12px rgba(244, 184, 96, .45);
+}
+.art-lanternes .ray {
+  left: 50%; top: 50%; width: 360px; height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(244, 184, 96, .35) 30%, rgba(244, 184, 96, .35) 70%, transparent);
+  transform-origin: center;
+}
+.art-lanternes .r1 { transform: translate(-50%, -50%) rotate(35deg); }
+.art-lanternes .r2 { transform: translate(-50%, -50%) rotate(-35deg); }
+
+.art-racines .seed { width: 16px; height: 16px; border-radius: 50%; top: 50%; }
+.art-racines .s1 { left: 25%; background: #d9534f; box-shadow: 0 0 0 18px rgba(217, 83, 79, .18), 0 0 0 36px rgba(217, 83, 79, .08); }
+.art-racines .s2 { left: 50%; top: 30%; background: #5b8fd9; box-shadow: 0 0 0 18px rgba(91, 143, 217, .18), 0 0 0 36px rgba(91, 143, 217, .08); }
+.art-racines .s3 { left: 72%; top: 62%; background: #e8c547; box-shadow: 0 0 0 18px rgba(232, 197, 71, .18), 0 0 0 36px rgba(232, 197, 71, .08); }
+
+@media (prefers-reduced-motion: reduce) {
+  a.game { transition: none; }
+  a.game:hover { transform: none; }
+}

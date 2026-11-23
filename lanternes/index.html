@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Lanternes · Jardin des énigmes</title>
+  <meta name="description" content="Place des lanternes qui éclairent en diagonale dans un jardin de nuit. Puzzle de logique à solution unique.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="back" href="/">← Jardin des énigmes</a>
+      <div class="eyebrow">Puzzle de placement · 5 × 5</div>
+      <h1>Lan<span>ternes</span></h1>
+      <p class="lede">La nuit tombe sur le jardin. Allume les tōrō pour que chaque allée ait sa lumière, sans qu'aucune lanterne n'en éblouisse une autre.</p>
+    </header>
+
+    <div class="main">
+      <section class="board-col" aria-label="Plateau de jeu">
+        <div class="tabs" id="tabs" role="group" aria-label="Choix du jardin"></div>
+        <div class="board" id="board" role="grid" aria-label="Jardin"></div>
+        <div class="counter" id="counter"></div>
+        <div class="controls">
+          <button class="btn primary" id="check" type="button">Vérifier</button>
+          <button class="btn" id="hint" type="button">Un indice</button>
+          <button class="btn" id="reset" type="button">Recommencer</button>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <aside class="rules">
+        <h2>Règles</h2>
+        <ol>
+          <li><p>Place <b>une lanterne par ligne</b> et <b>une par colonne</b>, soit 5 en tout.</p></li>
+          <li><p>Une lanterne éclaire <b>en diagonale</b>, dans les 4 directions, jusqu'au bord du jardin ou jusqu'à un <b>rocher</b>, qui arrête la lumière.</p></li>
+          <li><p><b>Aucune lanterne ne doit être éclairée</b> par une autre.</p></li>
+          <li><p>Un <b>chiffre</b> indique combien de lanternes éclairent sa case. On ne pose rien sur un chiffre ni sur un rocher.</p></li>
+        </ol>
+        <div class="note">
+          <p><b>Clic gauche</b> : lanterne, puis marque « possible » (lanterne en pointillés), puis case vide.<br><b>Clic droit</b> : croix « pas ici ». Sur téléphone, fais un <b>appui long</b>. Au clavier, utilise <kbd>X</kbd> pour la croix et <kbd>P</kbd> pour « possible ».</p>
+          <p>Chaque jardin a une seule solution, qu'on trouve par pure déduction, sans deviner.</p>
+          <p>Astuce : commence par les <b>0</b>. Une case marquée 0 interdit toutes les cases d'où une lanterne pourrait l'atteindre.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="/src/games/lanternes/main.ts"></script>
+</body>
+</html>
