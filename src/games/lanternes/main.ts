@@ -1,5 +1,7 @@
 import "../../styles/base.css";
+import "../../styles/game.css";
 import "./lanternes.css";
+import { bindCellInput, refocusCell } from "../../shared/cellInput";
 import { load, save as persist } from "../../shared/storage";
 import { PUZZLES } from "./puzzles";
 
@@ -88,18 +90,14 @@ function isSolved(a: Analysis): boolean {
   return true;
 }
 
-/* --- Saisie : clic gauche, clic droit, appui long, clavier --- */
-let suppressClickUntil = 0;
-let pressTimer: number | undefined;
-
+/* --- Effets des gestes (les gestes eux-mêmes sont dans shared/cellInput) --- */
 function setMark(k: string, mark: Mark | 0) {
   const st = state[current];
   if (mark) st[k] = mark; else delete st[k];
   setStatus("");
   render();
   save();
-  const el = boardEl.querySelector<HTMLElement>(`[data-key="${k}"]`);
-  if (el && document.activeElement === document.body) el.focus({ preventScroll: true });
+  refocusCell(boardEl, k);
   if (isSolved(analyse()) && !solved[current]) win();
 }
 
@@ -115,30 +113,10 @@ function toggleCross(k: string) {
 
 function bindCell(b: HTMLButtonElement, k: string) {
   b.dataset.key = k;
-  b.addEventListener("click", () => {
-    if (Date.now() < suppressClickUntil) return;
-    cycle(k);
-  });
-  b.addEventListener("contextmenu", (e) => {
-    e.preventDefault();
-    if (Date.now() < suppressClickUntil) return;
-    toggleCross(k);
-  });
-  b.addEventListener("pointerdown", (e) => {
-    if (e.pointerType === "mouse") return;
-    window.clearTimeout(pressTimer);
-    pressTimer = window.setTimeout(() => {
-      suppressClickUntil = Date.now() + 800;
-      toggleCross(k);
-    }, 450);
-  });
-  for (const ev of ["pointerup", "pointerleave", "pointercancel"]) {
-    b.addEventListener(ev, () => window.clearTimeout(pressTimer));
-  }
-  b.addEventListener("keydown", (e) => {
-    const pressed = e.key.toLowerCase();
-    if (pressed === "x") { e.preventDefault(); toggleCross(k); }
-    else if (pressed === "p") { e.preventDefault(); setMark(k, state[current][k] === MAYBE ? 0 : MAYBE); }
+  bindCellInput(b, {
+    primary: () => cycle(k),
+    cross: () => toggleCross(k),
+    maybe: () => setMark(k, state[current][k] === MAYBE ? 0 : MAYBE),
   });
 }
 
