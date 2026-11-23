@@ -57,7 +57,7 @@ export const LEVELS: Level[] = [
   {
     title: "Compter",
     intro:
-      "3 h 12, station de Pic-Noir. Le radiotélescope capte un signal qui se répète, venu d'une étoile à quarante années-lumière. Chaque transmission arrive avec une image : des points. Quelqu'un, là-bas, essaie de nous apprendre à compter.",
+      "3 h 12, station de Pic-Noir. Le radiotélescope capte un signal venu d'une étoile à quarante années-lumière. Chaque transmission est accompagnée d'une image.",
     transmissions: [
       { glyphs: "C", scene: { kind: "dots", n: 1 }, caption: "1 point" },
       { glyphs: "A", scene: { kind: "dots", n: 3 }, caption: "3 points" },
@@ -67,9 +67,9 @@ export const LEVELS: Level[] = [
       { glyphs: "AA", scene: { kind: "dots", n: 15 }, caption: "15 points" },
     ],
     questions: [
-      { kind: "read-number", glyphs: "AD", prompt: "Une nouvelle transmission arrive, sans image. Combien de points désigne-t-elle ?", answer: 14 },
-      { kind: "write", prompt: "Réponds-leur dans leur langue : onze points.", scene: { kind: "dots", n: 11 }, answer: "DA" },
-      { kind: "write", prompt: "Et maintenant : seize points.", scene: { kind: "dots", n: 16 }, answer: "CBB" },
+      { kind: "read-number", glyphs: "AD", prompt: "Combien de points désigne ce message ?", answer: 14 },
+      { kind: "write", prompt: "Écris : onze points.", scene: { kind: "dots", n: 11 }, answer: "DA" },
+      { kind: "write", prompt: "Écris : seize points.", scene: { kind: "dots", n: 16 }, answer: "CBB" },
     ],
     epilogue:
       "Ils comptent par paquets de quatre, comme nous comptons par dix. Tes réponses partent vers eux, mais le signal ne les attend pas : il poursuit sa leçon, imperturbable. Ce n'est pas une conversation. C'est un message émis il y a quarante ans. Les images changent : cette fois, ce sont des astres.",
@@ -77,7 +77,7 @@ export const LEVELS: Level[] = [
   {
     title: "Le ciel",
     intro:
-      "Les nouvelles images montrent des soleils, des planètes, des lunes. Ils décrivent leur ciel. Garde ton lexique sous la main : les nombres d'hier reviennent.",
+      "La suite du signal arrive, avec de nouvelles images.",
     transmissions: [
       { glyphs: "ED", scene: { kind: "group", g: { noun: "soleil", n: 2 } }, caption: "deux soleils" },
       { glyphs: "F", scene: { kind: "group", g: { noun: "planete", n: 1 } }, caption: "une planète" },
@@ -96,13 +96,13 @@ export const LEVELS: Level[] = [
     questions: [
       {
         kind: "write",
-        prompt: "À ton tour de décrire notre ciel. Huit planètes tournent autour d'un soleil.",
+        prompt: "Écris : huit planètes tournent autour d'un soleil.",
         scene: { kind: "orbit", a: { noun: "planete", n: 8 }, c: { noun: "soleil", n: 1 } },
         answer: "FDBEH",
       },
       {
         kind: "write",
-        prompt: "Et une lune tourne autour de notre planète.",
+        prompt: "Écris : une lune tourne autour d'une planète.",
         scene: { kind: "orbit", a: { noun: "lune", n: 1 }, c: { noun: "planete", n: 1 } },
         answer: "GFH",
       },
@@ -113,7 +113,7 @@ export const LEVELS: Level[] = [
   {
     title: "Le message",
     intro:
-      "La dernière partie du signal est plus longue, plus lente. De nouvelles images apparaissent : des êtres à quatre doigts, des astres qui pâlissent, des voyages. Puis vient un message sans aucune image.",
+      "La dernière partie du signal arrive. Elle se termine par un message sans image.",
     transmissions: [
       { glyphs: "I", scene: { kind: "group", g: { noun: "etre", n: 1 } }, caption: "un être" },
       { glyphs: "IA", scene: { kind: "group", g: { noun: "etre", n: 3 } }, caption: "trois êtres" },
@@ -121,7 +121,7 @@ export const LEVELS: Level[] = [
       {
         glyphs: "FDJL",
         scene: { kind: "die", s: { noun: "planete", n: 2 }, fut: true },
-        caption: "deux planètes s'éteindront (plus tard)",
+        caption: "deux planètes s'éteindront",
       },
       {
         glyphs: "IDEK",
@@ -131,26 +131,26 @@ export const LEVELS: Level[] = [
       {
         glyphs: "IFKL",
         scene: { kind: "go", s: { noun: "etre", n: 1 }, g: { noun: "planete", n: 1 }, fut: true },
-        caption: "un être ira vers une planète (plus tard)",
+        caption: "un être ira vers une planète",
       },
     ],
     questions: [
       {
         kind: "write",
-        prompt: "Vérifie que tu les comprends : écris « trois soleils s'éteindront ».",
+        prompt: "Écris : trois soleils s'éteindront.",
         scene: { kind: "die", s: { noun: "soleil", n: 3 }, fut: true },
         answer: "EAJL",
       },
       {
         kind: "write",
-        prompt: "Écris « un être va vers deux planètes ».",
+        prompt: "Écris : un être va vers deux planètes.",
         scene: { kind: "go", s: { noun: "etre", n: 1 }, g: { noun: "planete", n: 2 }, fut: false },
         answer: "IFDK",
       },
       {
         kind: "choose",
         lines: ["EDJL", "ICBBBEKL"],
-        prompt: "Leur dernier message, sans image. Que disent-ils ?",
+        prompt: "Que dit ce message ?",
         options: [
           { id: "a", text: "Deux soleils s'éteindront. Soixante-quatre êtres iront vers un soleil." },
           { id: "b", text: "Deux soleils s'éteignent. Soixante-quatre êtres vont vers un soleil." },

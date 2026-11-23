@@ -200,13 +200,7 @@ function check(qi: number) {
   }
   if (!right) {
     save();
-    const msg =
-      q.kind === "write"
-        ? "Ils ne comprendraient pas ce message. Vérifie l'ordre des glyphes et la façon d'écrire les nombres."
-        : q.kind === "choose"
-          ? "Ce n'est pas ce qu'ils disent. Regarde de près le temps des verbes et les nombres."
-          : "Ce n'est pas ce nombre. Regarde comment ils comptent au-delà de trois.";
-    feedback(qi, msg, "err");
+    feedback(qi, "Ce n'est pas la bonne réponse.", "err");
     return;
   }
   solved[current][qi] = true;
