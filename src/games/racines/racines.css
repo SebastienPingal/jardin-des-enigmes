@@ -28,7 +28,7 @@ svg.seed path { fill: var(--fc); stroke: var(--paper); stroke-width: 2; }
 
 /* Indices */
 .cell.clue { cursor: default; }
-.cell.clue .day {
+.cell .day {
   position: absolute; right: 4px; bottom: 3px;
   font-family: var(--font-body); font-weight: 700; font-size: clamp(11px, 2.6vw, 13px);
   line-height: 1; padding: 3px 5px; border-radius: 999px;
@@ -88,5 +88,7 @@ svg.seed path { fill: var(--fc); stroke: var(--paper); stroke-width: 2; }
 .pick[aria-checked="true"] { border-color: var(--fc); box-shadow: 0 0 0 1px var(--fc); }
 .pick.placed .pick-state::after { content: " ✓"; color: var(--fc); }
 .pick:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+
+.btn[aria-pressed="true"] { border-color: var(--glow); color: var(--glow); }
 
 .daybar { font-family: var(--font-display); font-weight: 800; color: var(--glow); }

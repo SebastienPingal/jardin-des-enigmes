@@ -27,15 +27,20 @@ let current = 0;
 let selected: Flower = 0;
 let marks: Marks[] = PUZZLES.map(() => ({}));
 let solved: boolean[] = PUZZLES.map(() => false);
+let showDays = false; // affiche le jour d'arrivée sur chaque case fleurie
 
-const saved = load<{ marks: Marks[]; solved: boolean[]; current: number; selected: Flower }>(STORAGE_KEY);
+const saved = load<{ marks: Marks[]; solved: boolean[]; current: number; selected: Flower; showDays?: boolean }>(
+  STORAGE_KEY,
+);
 if (saved && Array.isArray(saved.marks) && saved.marks.length === PUZZLES.length) {
   marks = saved.marks;
   solved = saved.solved ?? solved;
   current = saved.current ?? 0;
   selected = saved.selected ?? 0;
+  showDays = saved.showDays ?? false;
 }
-const save = () => persist(STORAGE_KEY, { marks, solved, current, selected });
+const save = () => persist(STORAGE_KEY, { marks, solved, current, selected, showDays });
+const dayTag = (day: number) => (showDays ? `<span class="day">J${day}</span>` : "");
 
 /* Vue « floraison » : animation jour par jour du jardin issu des graines posées */
 let view: "plant" | "bloom" = "plant";
@@ -200,13 +205,13 @@ function render() {
       let got = "rien pour l'instant";
       if (shown && shown.kind === "nue") {
         b.classList.add("bare");
-        html = '<span class="label">nue</span>';
+        html = '<span class="label">nue</span>' + dayTag(shown.day);
         got = `terre nue (jour ${shown.day})`;
       } else if (shown) {
         const kind = shown.kind as Flower;
         b.classList.add("bloom", `f${kind}`);
         const pop = shown.day === bloomDay && !bloomDone ? "pop" : "";
-        html = FLOWER_SVG(pop) + `<span class="day">J${shown.day}</span>`;
+        html = FLOWER_SVG(pop) + dayTag(shown.day);
         got = `${NAMES[kind]}, jour ${shown.day}`;
       }
       const expected = clue.kind === "nue" ? "terre nue" : `${NAMES[clue.kind]}${clue.day !== null ? `, jour ${clue.day}` : ""}`;
@@ -264,11 +269,11 @@ function render() {
         const pop = g.day === bloomDay && !bloomDone ? "pop" : "";
         if (g.kind === "nue") {
           b.classList.add("bare-bloom");
-          html = v?.startsWith("s") ? SEED_SVG : "";
+          html = (v?.startsWith("s") ? SEED_SVG : "") + dayTag(g.day);
         } else {
           b.classList.remove("f0", "f1", "f2");
           b.classList.add(`f${g.kind}`);
-          html = FLOWER_SVG(pop) + (v?.startsWith("s") ? SEED_SVG : "");
+          html = FLOWER_SVG(pop) + (v?.startsWith("s") ? SEED_SVG : "") + dayTag(g.day);
         }
       }
     }
@@ -344,6 +349,19 @@ $("grow").addEventListener("click", () => {
     else render();
   }, DAY_MS);
 });
+
+const daysBtn = $("days");
+function renderDaysButton() {
+  daysBtn.setAttribute("aria-pressed", showDays ? "true" : "false");
+  daysBtn.textContent = showDays ? "Masquer les jours" : "Afficher les jours";
+}
+daysBtn.addEventListener("click", () => {
+  showDays = !showDays;
+  save();
+  renderDaysButton();
+  render();
+});
+renderDaysButton();
 
 $("hint").addEventListener("click", () => {
   const p = puzzle();
