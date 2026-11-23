@@ -12,7 +12,7 @@ export default defineConfig({
         accueil: page("./index.html"),
         lanternes: page("./lanternes/index.html"),
         racines: page("./racines/index.html"),
-        telephone: page("./telephone/index.html"),
+        ballet: page("./ballet/index.html"),
       },
     },
   },

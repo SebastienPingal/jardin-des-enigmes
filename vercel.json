@@ -1,0 +1,6 @@
+{
+  "redirects": [
+    { "source": "/telephone", "destination": "/ballet/", "permanent": true },
+    { "source": "/telephone/:path*", "destination": "/ballet/", "permanent": true }
+  ]
+}

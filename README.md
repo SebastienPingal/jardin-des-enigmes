@@ -7,7 +7,7 @@ Des puzzles de logique originaux, à solution unique, jouables dans le navigateu
 - **Lanternes** (`/lanternes/`) : placer une lanterne par ligne et par colonne. Les lanternes éclairent en diagonale, les rochers arrêtent la lumière, aucune lanterne ne doit en éclairer une autre, et les chiffres indiquent combien de lanternes éclairent une case.
 - **Racines** (`/racines/`) : retrouver où étaient plantées trois graines. Les racines avancent d'une case par jour en contournant les rochers ; une case fleurit de la première racine arrivée, ou reste nue en cas d'égalité. Les grilles viennent de `tools/racines/generate.py` (Python + numpy), qui vérifie l'unicité et la résolution sans hypothèse.
 
-- **Téléphone** (`/telephone/`) : un collier de six perles passe entre 4 à 6 animaux, chacun le transformant toujours de la même façon (retourner, décaler, échanger…). À partir du collier de départ, de celui d'arrivée et de quelques indices, retrouver l'ordre de passage. Les grilles viennent de `tools/telephone/generate.py`, qui vérifie l'unicité et la résolution en avançant par les deux bouts.
+- **Ballet** (`/ballet/`) : six lucioles dansent en ligne et enchaînent 4 à 6 figures (volte-face, chassé-croisé, grand écart, rondes…), chacune réordonnant toujours la ligne de la même façon. À partir de la ligne au début et à la fin du bal, de lucioles aperçues en route et de remarques sur l'ordre, retrouver la chorégraphie. Les grilles viennent de `tools/ballet/generate.py`, qui vérifie l'unicité et la résolution en avançant par les deux bouts.
 
 ## Développement
 

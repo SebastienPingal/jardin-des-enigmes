@@ -1,0 +1,8 @@
+// Grilles produites par tools/ballet/generate.py : solution unique, trouvable en avançant par les deux bouts.
+import type { BalletPuzzle } from "./figures";
+
+export const PUZZLES: BalletPuzzle[] = [
+  {"name": "Soirée 1", "figures": ["rondedroite", "pascroise", "grandecart", "volteface"], "start": [5, 2, 3, 4, 1, 0], "end": [0, 4, 2, 3, 5, 1], "order": ["rondedroite", "pascroise", "volteface", "grandecart"], "clues": [{"kind": "snap", "step": 1, "pos": 1, "bead": 5}, {"kind": "snap", "step": 3, "pos": 2, "bead": 2}, {"kind": "before", "a": "pascroise", "b": "volteface"}]},
+  {"name": "Soirée 2", "figures": ["pascroise", "rondegauche", "grandecart", "demivolte", "pasdedeux"], "start": [4, 3, 0, 1, 5, 2], "end": [4, 3, 0, 1, 2, 5], "order": ["rondegauche", "pasdedeux", "pascroise", "demivolte", "grandecart"], "clues": [{"kind": "snap", "step": 2, "pos": 1, "bead": 3}, {"kind": "snap", "step": 3, "pos": 2, "bead": 5}, {"kind": "snap", "step": 4, "pos": 5, "bead": 4}, {"kind": "before", "a": "rondegauche", "b": "pasdedeux"}]},
+  {"name": "Soirée 3", "figures": ["rondegauche", "grandecart", "chassecroise", "demivolte", "volteface", "pasdedeux"], "start": [2, 1, 0, 5, 3, 4], "end": [2, 3, 1, 0, 4, 5], "order": ["demivolte", "chassecroise", "pasdedeux", "grandecart", "rondegauche", "volteface"], "clues": [{"kind": "snap", "step": 1, "pos": 3, "bead": 5}, {"kind": "snap", "step": 4, "pos": 4, "bead": 1}, {"kind": "snap", "step": 5, "pos": 2, "bead": 0}, {"kind": "before", "a": "chassecroise", "b": "grandecart"}, {"kind": "before", "a": "demivolte", "b": "pasdedeux"}, {"kind": "notat", "a": "pasdedeux", "slot": 1}, {"kind": "notat", "a": "pasdedeux", "slot": 3}]},
+];

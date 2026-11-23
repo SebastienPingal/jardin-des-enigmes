@@ -1,32 +1,35 @@
-/* Spécifique à Téléphone ; la mise en page commune est dans src/styles/game.css. */
+/* Spécifique à Ballet ; la mise en page commune est dans src/styles/game.css. */
 .board-col { justify-items: stretch; }
 .tabs, #mode, .controls, .status { justify-self: center; }
 
-/* --- Fiches des animaux --- */
-.animals {
+/* --- Fiches des figures --- */
+.figures {
   display: grid; gap: 8px;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 180px), 1fr));
 }
-.animal-card {
-  display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto;
-  column-gap: 10px; row-gap: 2px; align-items: center; text-align: left;
+.figure-card {
+  display: grid; gap: 6px; align-content: start; text-align: left;
   padding: 10px 12px; border-radius: 10px; cursor: pointer;
   background: var(--night-2); border: 1px solid var(--gravel-line); color: var(--paper);
   font: 400 13px/1.35 var(--font-body);
 }
-.animal-card .emoji { grid-row: 1 / span 3; font-size: 30px; line-height: 1; }
-.animal-card .who { font-weight: 700; font-size: 15px; display: flex; gap: 6px; align-items: baseline; }
-.animal-card .where {
-  font-size: 11px; font-weight: 700; padding: 1px 6px; border-radius: 999px;
+.figure-card .who { font-family: var(--font-display); font-weight: 800; font-size: 17px; display: flex; gap: 6px; align-items: baseline; }
+.figure-card .where {
+  font: 700 11px var(--font-body); padding: 1px 6px; border-radius: 999px;
   background: var(--gravel-line); color: var(--muted);
 }
-.animal-card .rule { color: var(--muted); }
-.animal-card[aria-checked="true"] { border-color: var(--glow); box-shadow: 0 0 0 1px var(--glow); }
-.animal-card.used:not([aria-checked="true"]) { opacity: .6; }
-.animal-card:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+.figure-card .rule { color: var(--muted); }
+.figure-card[aria-checked="true"] { border-color: var(--glow); box-shadow: 0 0 0 1px var(--glow); }
+.figure-card.used:not([aria-checked="true"]) { opacity: .6; }
+.figure-card:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
 
-.perm { display: inline-flex; gap: 6px; align-items: center; font-variant-numeric: tabular-nums; letter-spacing: .18em; font-size: 12px; color: var(--paper); }
-.perm .arrow { letter-spacing: 0; color: var(--glow); }
+/* Schéma d'une figure : traits de la place de départ (haut) à la place d'arrivée (bas) */
+svg.diagram { width: 100%; max-width: 150px; height: auto; display: block; }
+svg.diagram line, svg.mini line { stroke-width: 2.2; stroke-linecap: round; }
+svg.diagram line.move, svg.mini line.move { stroke: var(--glow); }
+svg.diagram line.still, svg.mini line.still { stroke: var(--gravel-line); }
+svg.diagram circle, svg.mini circle { fill: var(--paper); }
+svg.mini { width: 44px; height: 17px; display: block; }
 
 /* --- Frise des passages --- */
 .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -42,13 +45,9 @@
   display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; justify-items: center;
   padding: 4px 0;
 }
-/* le fil */
-.necklace::before {
-  content: ""; position: absolute; left: 4%; right: 4%; top: 50%; height: 2px;
-  background: var(--gravel-line); border-radius: 2px;
-}
+/* une luciole : forme colorée qui luit */
 .bead { position: relative; display: grid; place-items: center; width: 100%; max-width: 40px; aspect-ratio: 1; }
-.bead svg { width: 100%; height: 100%; fill: var(--bc); filter: drop-shadow(0 2px 2px rgba(0, 0, 0, .45)); }
+.bead svg { width: 78%; height: 78%; fill: var(--bc); filter: drop-shadow(0 0 5px var(--bc)) drop-shadow(0 0 1px var(--bc)); }
 .bead.unknown {
   border: 2px dashed var(--gravel-line); border-radius: 50%; max-width: 32px;
   font: 700 13px var(--font-body); color: var(--muted); background: var(--night);
@@ -63,7 +62,7 @@
   @keyframes slide-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
 }
 
-/* Brouillon : emplacements à remplir et perles supposées */
+/* Brouillon : emplacements à remplir et lucioles supposées */
 .bead-btn {
   position: relative; display: grid; place-items: center;
   width: 100%; max-width: 40px; aspect-ratio: 1; padding: 0; border: 0; background: transparent;
@@ -92,7 +91,7 @@
 .bead-picker button:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
 .bead-picker .erase { width: auto; padding: 0 12px; font: 500 13px var(--font-body); color: var(--muted); }
 
-/* La place d'un animal */
+/* La place d'une figure */
 .slot {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px;
   width: 100%; min-height: 54px; padding: 8px 12px;
@@ -105,14 +104,14 @@
 .slot-num {
   min-width: 34px; text-align: center; font-family: var(--font-display); font-weight: 800; color: var(--glow);
 }
-.slot-animal { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
-.slot-animal .emoji { font-size: 24px; line-height: 1; }
+.slot-figure { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; }
 .slot-empty { color: var(--muted); }
-.slot-notes, .slot-crosses { display: inline-flex; gap: 4px; margin-left: auto; font-style: normal; }
+.slot-notes, .slot-crosses { display: inline-flex; flex-wrap: wrap; gap: 4px; margin-left: auto; font-style: normal; }
 .slot-notes i, .slot-crosses i {
-  font-style: normal; font-size: 16px; line-height: 1; padding: 3px; border-radius: 6px;
+  display: block; font-style: normal; line-height: 0; padding: 4px 5px; border-radius: 6px;
   background: var(--gravel);
 }
+.slot-notes svg.mini, .slot-crosses svg.mini { width: 34px; height: 13px; }
 .slot-crosses i { position: relative; opacity: .55; }
 .slot-crosses i::after {
   content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 2px;

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Ballet · Jardin des énigmes</title>
+  <meta name="description" content="Six lucioles dansent en ligne au-dessus de la mare. Retrouve l'ordre des figures de leur ballet.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <a class="back" href="/">← Jardin des énigmes</a>
+      <div class="eyebrow">Puzzle d'ordre · 6 lucioles</div>
+      <h1>Bal<span>let</span></h1>
+      <p class="lede">Chaque soir, six lucioles dansent en ligne au-dessus de la mare. Chaque figure de leur ballet les fait toujours changer de place de la même façon. Ce soir, dans quel ordre ont-elles dansé ?</p>
+    </header>
+
+    <div class="main">
+      <section class="board-col" aria-label="Plateau de jeu">
+        <div class="tabs" id="tabs" role="group" aria-label="Choix de la soirée"></div>
+        <div id="mode"></div>
+        <div class="figures" id="figures" role="radiogroup" aria-label="Figure choisie"></div>
+        <ol class="timeline" id="timeline" aria-label="Ordre des figures"></ol>
+        <div class="remarks" id="remarks"></div>
+        <div class="controls">
+          <button class="btn primary" id="play" type="button">Lancer le ballet</button>
+          <button class="btn" id="hint" type="button">Un indice</button>
+          <button class="btn" id="reset" type="button">Recommencer</button>
+        </div>
+        <div class="status" id="status" role="status" aria-live="polite"></div>
+      </section>
+
+      <aside class="rules">
+        <h2>Règles</h2>
+        <ol>
+          <li><p><b>Six lucioles</b> dansent côte à côte. Le ballet enchaîne plusieurs <b>figures</b>, chacune dansée <b>une seule fois</b>.</p></li>
+          <li><p>Une figure déplace <b>toujours les lucioles de la même façon</b>. Sa fiche le montre : chaque trait relie une place de départ (en haut) à la place d'arrivée (en bas), places 1 à 6 de gauche à droite.</p></li>
+          <li><p>Tu connais la ligne au <b>début</b> et à la <b>fin du bal</b>, quelques <b>lucioles aperçues</b> en cours de route, et des remarques sur l'ordre des figures.</p></li>
+          <li><p>Retrouve l'<b>ordre des figures</b>. Il n'y a qu'une seule solution.</p></li>
+        </ol>
+        <div class="note">
+          <p><b>Astuce.</b> Avance par les deux bouts. Quelle figure peut ouvrir le bal sans contredire les lucioles aperçues ? Et laquelle peut le clore ? Pour la dernière, défais sa figure en partant de la ligne de fin.</p>
+          <p><b>Placer / Noter</b> : choisis une figure, puis touche une place. En mode Placer, elle s'y installe (ou en repart). En mode Noter, elle s'ajoute aux possibles de la place. <b>Clic droit</b> ou <b>appui long</b> : la figure choisie est barrée pour cette place. <kbd>N</kbd> bascule le mode, <kbd>1</kbd> à <kbd>6</kbd> choisissent la figure.</p>
+          <p><b>Brouillon</b> : après chaque figure, touche un « ? » pour y poser la luciole que tu supposes. Les lucioles aperçues restent fixes, et chaque luciole n'occupe qu'une place par ligne.</p>
+          <p>Quand toutes les places sont prises, lance le ballet pour vérifier.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+  <script type="module" src="/src/games/ballet/main.ts"></script>
+</body>
+</html>
