@@ -134,17 +134,28 @@ function toggleCross(k: string) {
   setMark(k, marks[current][k] === "x" ? null : "x");
 }
 
+/** Quitte la floraison et retrouve les graines telles qu'elles étaient plantées. */
+function backToSeeds() {
+  stopBloom();
+  setStatus("");
+  render();
+}
+
+// Pendant la floraison, un geste sur une case ramène d'abord aux graines, sans rien modifier.
+const unlessBlooming = (action: () => void) => () => (view === "bloom" ? backToSeeds() : action());
+
 function bindCell(b: HTMLButtonElement, k: string) {
   b.dataset.key = k;
   bindCellInput(b, {
-    primary: () => cycle(k),
-    cross: () => toggleCross(k),
-    maybe: () => setMark(k, marks[current][k] === `m${selected}` ? null : `m${selected}`),
+    primary: unlessBlooming(() => cycle(k)),
+    cross: unlessBlooming(() => toggleCross(k)),
+    maybe: unlessBlooming(() => setMark(k, marks[current][k] === `m${selected}` ? null : `m${selected}`)),
   });
 }
 
 document.addEventListener("keydown", (e) => {
   if (e.key === "1" || e.key === "2" || e.key === "3") selectFlower((Number(e.key) - 1) as Flower);
+  if (e.key === "Escape" && view === "bloom") backToSeeds();
 });
 
 function selectFlower(f: Flower) {
@@ -283,6 +294,7 @@ function render() {
     boardEl.appendChild(b);
   }
 
+  $("grow").textContent = view === "bloom" ? "Revenir aux graines" : "Faire pousser";
   const count = placedSeeds().filter(Boolean).length;
   counterEl.innerHTML = view === "bloom"
     ? `<span class="daybar">Jour ${bloomDay}</span>`
@@ -322,13 +334,14 @@ function finishBloom() {
   } else {
     setStatus(
       `${bad} indice${bad > 1 ? "s ne correspondent" : " ne correspond"} pas (cerclé${bad > 1 ? "s" : ""} de rouge). ` +
-        "La pastille en pointillés montre ce qui était attendu. Touche une case pour replanter.",
+        "La pastille en pointillés montre ce qui était attendu. « Revenir aux graines » pour corriger.",
       "err",
     );
   }
 }
 
 $("grow").addEventListener("click", () => {
+  if (view === "bloom") return backToSeeds();
   const seeds = placedSeeds();
   if (seeds.some((s) => !s)) {
     const missing = FLOWERS.filter((f) => !seeds[f]).map((f) => NAMES[f]);
