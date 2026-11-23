@@ -83,7 +83,8 @@ function renderTransmissions() {
       return (
         `<li class="transmission"><span class="t-num">T${i + 1}</span>` +
         `<div class="t-text">${message(t.glyphs)}${gloss}</div>` +
-        `<figure>${sceneSvg(t.scene)}<figcaption>${t.caption}</figcaption></figure></li>`
+        // La légende n'apparaît qu'une fois la partie résolue (avant : seulement pour les lecteurs d'écran)
+        `<figure>${sceneSvg(t.scene)}<figcaption class="${done ? "" : "sr-only"}">${t.caption}</figcaption></figure></li>`
       );
     })
     .join("");
