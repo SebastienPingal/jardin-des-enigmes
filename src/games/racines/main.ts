@@ -6,7 +6,7 @@ import { load, save as persist } from "../../shared/storage";
 import { PUZZLES, type ClueKind, type Flower, type RacinesPuzzle } from "./puzzles";
 
 /* Choix de la palette : une des trois fleurs, ou « inconnue » (une graine est là, mais laquelle ?). */
-const UNKNOWN = 3;
+const UNKNOWN = 3 as const;
 type Tool = Flower | typeof UNKNOWN;
 const TOOLS: Tool[] = [0, 1, 2, UNKNOWN];
 
