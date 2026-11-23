@@ -10,6 +10,7 @@
   --soil-line: #2e2219;
 }
 
+.fn { --fc: #cfc6b4; --fh: #6b6254; } /* graine inconnue ; définie avant les fleurs pour qu'elles l'emportent */
 .f0 { --fc: var(--poppy); --fh: var(--poppy-heart); }
 .f1 { --fc: var(--cornflower); --fh: var(--cornflower-heart); }
 .f2 { --fc: var(--buttercup); --fh: var(--buttercup-heart); }
@@ -25,6 +26,8 @@ svg.flower .petal { fill: var(--fc); }
 svg.flower .heart { fill: var(--fh); }
 svg.seed { width: 50%; height: 50%; }
 svg.seed path { fill: var(--fc); stroke: var(--paper); stroke-width: 2; }
+svg.seed.neutral path { stroke-dasharray: 4 3; }
+svg.seed.neutral text { font: 800 15px var(--font-body); fill: var(--night); }
 
 /* Indices */
 .cell.clue { cursor: default; }

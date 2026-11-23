@@ -8,9 +8,14 @@ import { PUZZLES, type ClueKind, type Flower, type RacinesPuzzle } from "./puzzl
 /* Marques du joueur sur une case : une graine, une croix, et des « possible » cumulables (une par fleur). */
 interface CellMarks {
   seed?: Flower;
+  neutral?: boolean; // « il y a une graine ici, mais je ne sais pas laquelle »
   cross?: boolean;
   maybe?: Flower[];
 }
+
+/* Outil choisi dans la palette : une fleur, ou la graine inconnue. */
+const NEUTRAL = 3;
+type Tool = Flower | typeof NEUTRAL;
 type Marks = Record<string, CellMarks>;
 
 /** Convertit l'ancien format de sauvegarde ("s0", "m1", "x") vers le nouveau. */
@@ -43,9 +48,12 @@ const FLOWER_SVG = (extra = "") =>
   `<circle class="heart" cx="20" cy="20" r="5"/></svg>`;
 const SEED_SVG =
   '<svg class="seed" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5C27 14 31 21 31 26a11 11 0 0 1-22 0c0-5 4-12 11-21z"/></svg>';
+const NEUTRAL_SEED =
+  '<svg class="seed neutral" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5C27 14 31 21 31 26a11 11 0 0 1-22 0c0-5 4-12 11-21z"/>' +
+  '<text x="20" y="31" text-anchor="middle">?</text></svg>';
 
 let current = 0;
-let selected: Flower = 0;
+let selected: Tool = 0;
 let marks: Marks[] = PUZZLES.map(() => ({}));
 let solved: boolean[] = PUZZLES.map(() => false);
 let showDays = false; // affiche le jour d'arrivée sur chaque case fleurie
@@ -54,7 +62,7 @@ const saved = load<{
   marks: Record<string, unknown>[];
   solved: boolean[];
   current: number;
-  selected: Flower;
+  selected: Tool;
   showDays?: boolean;
 }>(STORAGE_KEY);
 if (saved && Array.isArray(saved.marks) && saved.marks.length === PUZZLES.length) {
@@ -143,7 +151,8 @@ function updateCell(k: string, change: (cell: CellMarks) => void) {
   change(cell);
   if (cell.maybe && !cell.maybe.length) delete cell.maybe;
   if (!cell.cross) delete cell.cross;
-  if (cell.seed === undefined && !cell.cross && !cell.maybe) delete st[k];
+  if (!cell.neutral) delete cell.neutral;
+  if (cell.seed === undefined && !cell.neutral && !cell.cross && !cell.maybe) delete st[k];
   else st[k] = cell;
   stopBloom();
   setStatus("");
@@ -162,15 +171,27 @@ function plantSeed(cell: CellMarks, f: Flower) {
   for (const [k, other] of Object.entries(st)) {
     if (other === cell || other.seed !== f) continue;
     delete other.seed;
-    if (!other.cross && !other.maybe?.length) delete st[k];
+    if (!other.neutral && !other.cross && !other.maybe?.length) delete st[k];
   }
   cell.seed = f;
+  cell.neutral = false;
   cell.cross = false;
   withoutMaybe(cell, f);
 }
 
+function toggleNeutral(k: string) {
+  updateCell(k, (cell) => {
+    cell.neutral = !cell.neutral;
+    if (cell.neutral) {
+      delete cell.seed;
+      cell.cross = false;
+    }
+  });
+}
+
 function cycle(k: string) {
   // pour la fleur choisie : rien → graine → possible → rien ; les autres fleurs ne sont pas touchées
+  if (selected === NEUTRAL) return toggleNeutral(k);
   const f = selected;
   updateCell(k, (cell) => {
     if (cell.seed === f) {
@@ -185,6 +206,7 @@ function cycle(k: string) {
 }
 
 function toggleMaybe(k: string) {
+  if (selected === NEUTRAL) return toggleNeutral(k);
   const f = selected;
   updateCell(k, (cell) => {
     if (cell.maybe?.includes(f)) withoutMaybe(cell, f);
@@ -195,7 +217,11 @@ function toggleMaybe(k: string) {
 function toggleCross(k: string) {
   updateCell(k, (cell) => {
     cell.cross = !cell.cross;
-    if (cell.cross) delete cell.seed; // une croix veut dire « pas de graine ici »
+    if (cell.cross) {
+      // une croix veut dire « pas de graine ici »
+      delete cell.seed;
+      cell.neutral = false;
+    }
   });
 }
 
@@ -219,11 +245,11 @@ function bindCell(b: HTMLButtonElement, k: string) {
 }
 
 document.addEventListener("keydown", (e) => {
-  if (e.key === "1" || e.key === "2" || e.key === "3") selectFlower((Number(e.key) - 1) as Flower);
+  if (["1", "2", "3", "4"].includes(e.key)) selectFlower((Number(e.key) - 1) as Tool);
   if (e.key === "Escape" && view === "bloom") backToSeeds();
 });
 
-function selectFlower(f: Flower) {
+function selectFlower(f: Tool) {
   selected = f;
   save();
   renderPalette();
@@ -243,6 +269,15 @@ function renderPalette() {
     b.addEventListener("click", () => selectFlower(f));
     paletteEl.appendChild(b);
   }
+  const n = document.createElement("button");
+  n.type = "button";
+  n.className = "pick fn";
+  n.setAttribute("role", "radio");
+  n.setAttribute("aria-checked", selected === NEUTRAL ? "true" : "false");
+  n.title = "Une graine est ici, mais tu ne sais pas encore laquelle";
+  n.innerHTML = `${NEUTRAL_SEED}<span class="pick-state">inconnue</span>`;
+  n.addEventListener("click", () => selectFlower(NEUTRAL));
+  paletteEl.appendChild(n);
 }
 
 function render() {
@@ -329,6 +364,11 @@ function render() {
       html += SEED_SVG;
       parts.push(`graine ${OF[cell.seed]}`);
     }
+    if (cell?.neutral) {
+      b.classList.add("seed-cell", "fn");
+      html += NEUTRAL_SEED;
+      parts.push("graine inconnue");
+    }
     if (cell?.cross) {
       html += '<span class="cross"></span>';
       parts.push("croix");
@@ -336,7 +376,7 @@ function render() {
     if (cell?.maybe?.length) {
       // un emplacement fixe par fleur : coquelicot à gauche, bleuet au centre, bouton d'or à droite
       const slots = FLOWERS.map((f) => `<i class="f${f}${cell.maybe!.includes(f) ? " on" : ""}"></i>`).join("");
-      html += `<span class="maybes${hasSeed || cell.cross ? " low" : ""}">${slots}</span>`;
+      html += `<span class="maybes${hasSeed || cell.neutral || cell.cross ? " low" : ""}">${slots}</span>`;
       parts.push(`possible pour ${cell.maybe.map((f) => `le ${NAMES[f]}`).join(", ")}`);
     }
     const label = `${parts.length ? parts.join(", ") : "Case vide"}, ${where}`;
