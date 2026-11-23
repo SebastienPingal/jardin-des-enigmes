@@ -1,0 +1,8 @@
+// Grilles produites par tools/telephone/generate.py : solution unique, trouvable en avançant par les deux bouts.
+import type { TelephonePuzzle } from "./animals";
+
+export const PUZZLES: TelephonePuzzle[] = [
+  {"name": "Jardin 1", "animals": ["blaireau", "chouette", "escargot", "merle"], "start": [5, 2, 3, 4, 1, 0], "end": [0, 4, 2, 3, 5, 1], "order": ["blaireau", "chouette", "merle", "escargot"], "clues": [{"kind": "snap", "step": 1, "pos": 1, "bead": 5}, {"kind": "snap", "step": 3, "pos": 2, "bead": 2}, {"kind": "before", "a": "chouette", "b": "merle"}]},
+  {"name": "Jardin 2", "animals": ["chouette", "ecureuil", "escargot", "herisson", "renard"], "start": [4, 3, 0, 1, 5, 2], "end": [4, 3, 0, 1, 2, 5], "order": ["ecureuil", "renard", "chouette", "herisson", "escargot"], "clues": [{"kind": "snap", "step": 2, "pos": 1, "bead": 3}, {"kind": "snap", "step": 3, "pos": 2, "bead": 5}, {"kind": "snap", "step": 4, "pos": 5, "bead": 4}, {"kind": "before", "a": "ecureuil", "b": "renard"}]},
+  {"name": "Jardin 3", "animals": ["ecureuil", "escargot", "grenouille", "herisson", "merle", "renard"], "start": [2, 1, 0, 5, 3, 4], "end": [2, 3, 1, 0, 4, 5], "order": ["herisson", "grenouille", "renard", "escargot", "ecureuil", "merle"], "clues": [{"kind": "snap", "step": 1, "pos": 3, "bead": 5}, {"kind": "snap", "step": 4, "pos": 4, "bead": 1}, {"kind": "snap", "step": 5, "pos": 2, "bead": 0}, {"kind": "before", "a": "grenouille", "b": "escargot"}, {"kind": "before", "a": "herisson", "b": "renard"}, {"kind": "notat", "a": "renard", "slot": 1}, {"kind": "notat", "a": "renard", "slot": 3}]},
+];

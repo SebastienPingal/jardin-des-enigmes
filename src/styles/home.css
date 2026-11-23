@@ -47,6 +47,15 @@ a.game:hover { border-color: var(--glow); transform: translateY(-2px); }
 .art-racines .s2 { left: 50%; top: 30%; background: #5b8fd9; box-shadow: 0 0 0 18px rgba(91, 143, 217, .18), 0 0 0 36px rgba(91, 143, 217, .08); }
 .art-racines .s3 { left: 72%; top: 62%; background: #e8c547; box-shadow: 0 0 0 18px rgba(232, 197, 71, .18), 0 0 0 36px rgba(232, 197, 71, .08); }
 
+.art-telephone .thread { left: 10%; right: 10%; top: 50%; height: 2px; background: var(--gravel-line); }
+.art-telephone .b { top: calc(50% - 11px); width: 22px; height: 22px; border-radius: 50%; }
+.art-telephone .b1 { left: 14%; background: #e8563f; }
+.art-telephone .b2 { left: 27%; background: #6f9cf2; border-radius: 4px; }
+.art-telephone .b3 { left: 40%; background: #f2cf4a; transform: rotate(45deg); border-radius: 3px; }
+.art-telephone .b4 { left: 53%; background: #6cc28a; }
+.art-telephone .b5 { left: 66%; background: #b48cf0; border-radius: 4px; }
+.art-telephone .b6 { left: 79%; background: #ece6d8; }
+
 @media (prefers-reduced-motion: reduce) {
   a.game { transition: none; }
   a.game:hover { transform: none; }
