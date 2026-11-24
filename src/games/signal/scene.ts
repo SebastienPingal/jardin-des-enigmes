@@ -43,8 +43,22 @@ function icon(noun: Noun, x: number, y: number, s: number): string {
   }
 }
 
-/** Dispose n icônes dans une boîte, sur une ou deux rangées. */
+/** Icône seule, pour les pièces du constructeur d'image. */
+export function iconSvg(noun: Noun): string {
+  return `<svg class="piece" viewBox="0 0 40 40" aria-hidden="true">${icon(noun, 20, 21, 40)}</svg>`;
+}
+
+const MAX_DRAWN = 8;
+
+/** Dispose n icônes dans une boîte, sur une ou deux rangées (au-delà de 8 : une icône et « ×n »). */
 function group(g: Group, bx: number, by: number, bw: number, bh: number, cls = ""): string {
+  if (g.n > MAX_DRAWN) {
+    const s = Math.min(bw * 0.5, bh, 44);
+    return (
+      `<g class="${cls}">${icon(g.noun, bx + bw * 0.32, by + bh / 2, s)}` +
+      `<text class="sc-count" x="${f(bx + bw * 0.58)}" y="${f(by + bh / 2 + 6)}">×${g.n}</text></g>`
+    );
+  }
   const rows = g.n > 4 ? 2 : 1;
   const perRow = Math.ceil(g.n / rows);
   const s = Math.min(bw / perRow, bh / rows, 44);
@@ -83,12 +97,13 @@ export function sceneSvg(sc: Scene): string {
       body = `<ellipse class="sc-path" cx="100" cy="50" rx="78" ry="33"/>`;
       body += `<path class="sc-arrow" d="M96 14 L104 17 L96 20"/>`;
       body += group(sc.c, 70, 30, 60, 40);
-      const n = sc.a.n;
+      const n = Math.min(sc.a.n, MAX_DRAWN);
       const s = n > 4 ? 22 : 30;
       for (let i = 0; i < n; i++) {
         const a = Math.PI / 2 + (i * 2 * Math.PI) / n + (n === 1 ? 0.6 : 0);
         body += icon(sc.a.noun, 100 + 78 * Math.cos(a), 50 + 33 * Math.sin(a), s);
       }
+      if (sc.a.n > MAX_DRAWN) body += `<text class="sc-count" x="128" y="96">×${sc.a.n}</text>`;
       break;
     }
     case "die":

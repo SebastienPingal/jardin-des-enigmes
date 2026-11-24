@@ -42,15 +42,15 @@ export interface Transmission {
 
 export type Question =
   | { kind: "read-number"; glyphs: string; answer: number }
-  | { kind: "write"; scene: Scene; answer: string };
+  | { kind: "write"; scene: Scene; answer: string }
+  /** Lire : reconstituer l'image que décrit un message, avec des pièces dessinées. */
+  | { kind: "build"; glyphs: string; answer: Scene };
 
 export interface Level {
   title: string;
   intro: string;
   transmissions: Transmission[];
   questions: Question[];
-  /** Dernier message, sans image ni question : sa traduction n'apparaît qu'une fois la partie résolue. */
-  finale?: { lines: string[]; translation: string };
   epilogue: string;
 }
 
@@ -148,12 +148,15 @@ export const LEVELS: Level[] = [
         scene: { kind: "go", s: { noun: "etre", n: 1 }, g: { noun: "planete", n: 2 }, fut: false },
         answer: "IFDK",
       },
+      // Le dernier message des extraterrestres : à lire, en reconstituant l'image de chaque ligne
+      { kind: "build", glyphs: "EDJL", answer: { kind: "die", s: { noun: "soleil", n: 2 }, fut: true } },
+      {
+        kind: "build",
+        glyphs: "ICBBBEKL",
+        answer: { kind: "go", s: { noun: "etre", n: 64 }, g: { noun: "soleil", n: 1 }, fut: true },
+      },
     ],
-    finale: {
-      lines: ["EDJL", "ICBBBEKL"],
-      translation: "Deux soleils s'éteindront. Soixante-quatre êtres iront vers un soleil.",
-    },
     epilogue:
-      "Leurs deux soleils allaient s'éteindre. Soixante-quatre d'entre eux devaient partir vers un soleil, un seul. Ce message a quarante ans : ils sont peut-être déjà en route. Dans quarante ans, ta réponse leur parviendra : huit planètes, une lune, un soleil. Sauront-ils qu'ils ont trouvé ? Le signal se tait. Sur l'écran de la station, la dernière image reste figée : quatre doigts levés, comme un salut.",
+      "« Deux soleils s'éteindront. Soixante-quatre êtres iront vers un soleil. » Leurs deux soleils allaient s'éteindre. Soixante-quatre d'entre eux devaient partir vers un soleil, un seul. Ce message a quarante ans : ils sont peut-être déjà en route. Dans quarante ans, ta réponse leur parviendra : huit planètes, une lune, un soleil. Sauront-ils qu'ils ont trouvé ? Le signal se tait. Sur l'écran de la station, la dernière image reste figée : quatre doigts levés, comme un salut.",
   },
 ];

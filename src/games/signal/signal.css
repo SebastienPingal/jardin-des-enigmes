@@ -101,14 +101,41 @@ svg.scene { width: 100%; max-width: 220px; height: auto; display: block; backgro
 .q-feedback.ok { color: var(--ok); }
 .q-feedback.err { color: var(--bad); }
 
-/* --- Dernier message (sans image) --- */
-.finale { display: grid; gap: 10px; }
-.finale-box {
-  display: grid; gap: 10px; padding: 14px; border-radius: 12px;
-  background: var(--space); border: 1px dashed var(--glow);
+/* --- Le dernier message, mis en avant --- */
+.question.final { border: 1px dashed var(--glow); background: color-mix(in srgb, var(--glow) 6%, var(--night-2)); }
+.final-title { margin: 0; font-family: var(--font-display); font-weight: 800; font-size: 20px; color: var(--glow); }
+.question.final .q-msg .glyph { width: 32px; height: 46px; }
+
+/* --- Constructeur d'image (lecture des messages) --- */
+.builder { display: grid; gap: 10px; }
+.b-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.b-label { min-width: 72px; font-size: 13px; color: var(--muted); }
+.b-opts { display: flex; flex-wrap: wrap; gap: 6px; }
+.b-opt {
+  display: grid; place-items: center; width: 48px; height: 48px; padding: 4px; cursor: pointer;
+  border-radius: 10px; border: 1px solid var(--gravel-line); background: var(--space);
 }
-.finale-box .glyph { width: 28px; height: 40px; }
-.finale-translation { margin: 4px 0 0; font-family: var(--font-display); font-weight: 600; font-size: 18px; color: var(--paper); }
+.b-opt[aria-pressed="true"] { border-color: var(--glow); box-shadow: 0 0 0 1px var(--glow); }
+.b-opt:hover { border-color: var(--glow); }
+.b-opt:focus-visible { outline: 2px solid var(--glow); outline-offset: 2px; }
+svg.piece { width: 100%; height: 100%; display: block; }
+.piece .a-line { fill: none; stroke: var(--paper); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.piece .a-fade { fill: #6b7186; }
+.piece .a-path { fill: none; stroke: var(--paper); stroke-width: 1.6; stroke-dasharray: 3 3; }
+.piece .a-dot { fill: var(--paper); }
+.b-count { display: inline-flex; align-items: center; gap: 4px; color: var(--muted); font-weight: 700; }
+.b-count input {
+  width: 72px; font: 600 15px var(--font-body); padding: 8px; border-radius: 8px;
+  background: var(--night); color: var(--paper); border: 1px solid var(--gravel-line);
+}
+.b-count input:focus-visible { outline: 2px solid var(--glow); outline-offset: 1px; }
+.b-preview { margin: 0; }
+.b-preview svg.scene { max-width: 260px; }
+.b-empty {
+  display: grid; place-items: center; width: 100%; max-width: 260px; aspect-ratio: 2 / 1;
+  border-radius: 8px; background: var(--space); color: var(--muted); font-size: 28px;
+}
+.sc-count { fill: var(--paper); font: 700 22px var(--font-body); }
 
 /* --- Épilogue --- */
 .epilogue {

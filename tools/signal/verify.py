@@ -183,6 +183,6 @@ if __name__ == "__main__":
     print("Niveau 3 :", n, "hypothèse(s) ; transmissions :", seen)
     for s, outs in writes:
         print("  écrire", s, "->", outs, "OK" if len(outs) == 1 else "AMBIGU")
-    # Le message final n'est pas une question : il suffit qu'une seule grammaire reste possible pour qu'il n'ait qu'un sens.
+    # Le message final se lit en reconstituant l'image de chaque ligne : une seule grammaire possible => un seul sens.
     print("  message final", final, "OK (une seule grammaire possible)" if n == 1 else "AMBIGU")
     print("  questions niveau 1 en glyphes :", {n: numeral(n) for n in L1_WRITE})
